@@ -1,0 +1,99 @@
+{# @var craft \craft\web\twig\variables\CraftVariable #}
+{#
+/**
+ * Notification plugin for Craft CMS 3.x
+ *
+ * Notification index.twig
+ *
+ * @author    Fatfish
+ * @copyright Copyright (c) 2018 Fatfish
+ * @link      https://fatfish.com.au
+ * @package   Notification
+ * @since     1.0.0
+ */
+#}
+
+{% extends "_layouts/cp" %}
+{% import "_includes/forms" as forms %}
+
+{#{% do view.registerAssetBundle("fatfish\\notification\\assetbundles\\notification\\NotificationAsset") %}#}
+{% do view.registerAssetBundle("fatfish\\notification\\assetbundles\\indexcpsection\\IndexCPSectionAsset") %}
+
+{# Link for the ? icon at the bottom of the page #}
+{#{% set docsUrl = "https://github.com/fatfishdigital/notification/blob/master/README.md" %}#}
+
+{# The title of this CP section #}
+{% set title = "Notification" %}
+
+{# The URL to this plugin's base CP section #}
+{#{% set pluginCpUrl = url('notification') %}#}
+
+{# Get a URL to an image in our AssetBundle #}
+{#{% set iconUrl = view.getAssetManager().getPublishedUrl('@fatfish/notification/assetbundles/indexcpsection/dist', true) ~ '/img/Index-icon.svg' %}#}
+
+{% block sidebar%}
+    <nav>
+        <ul>
+            <li><a href="{{ siteUrl }}admin/notification">Server Notification</a> </li>
+            <li><a href="{{ siteUrl }}admin/notification/craft" class="sel">Craft Notification</a></li>
+            <li><a href="#">Notification Settings</a></li>
+            <li><a href="#">Settings</a></li>
+        </ul>
+    </nav>
+{% endblock %}
+{% block content %}
+    <form method="post" action="{{ siteUrl }}admin/notification/save" accept-charset="UTF-8">
+        {{ csrfInput() }}
+        {{ forms.textField({
+            id:'element_name',
+            name:'element_name',
+            label : 'Name',
+            instructions:'Give your Element Notification name eg. Entries Notification',
+            required :true
+        }) }}
+
+        <div class="field">
+            <div class="heading">
+        <label for="element_type" class="required">Element Type </label> <br>
+                <div class="instructions">Choose Element Type eg. Entries,Assets,Category,GlobalSet,MatrixBlock,Tag,User</div>
+        {{ forms.select({
+            id:'element_type',
+            name: 'element_type',
+            label: 'Element Type',
+            options : ['Entries','Assets','Category','GlobalSet','MatrixBlock','Tag','User'],
+            instructions: 'Choose Element Type eg. Entries,Assets,Category,GlobalSet,MatrixBlock,Tag,User',
+            required : true,
+        }) }}
+            </div>
+        </div>
+
+        <div class="field">
+            <div class="heading">
+                <label for="" class="required">Select Events To Notify</label>
+                <div class="instructions">Eg. Notify On Create Entries,Delete Entries, Create User etc.</div>
+                <div class="events">
+
+
+                </div>
+            </div>
+        </div>
+
+
+        <button type="submit" value="submit" class="btn btn-success">Save</button>
+    </form>
+{% endblock %}
+{% js %}
+    $(document).ready(function(){
+
+    $('#element_type').on('change',function() {
+
+            var selectedEntryType = $('#element_type').val();
+        console.log(selectedEntryType);
+
+
+    });
+
+
+
+    });
+{% endjs %}

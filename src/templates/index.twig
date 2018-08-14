@@ -1,0 +1,128 @@
+{# @var craft \craft\web\twig\variables\CraftVariable #}
+{#
+/**
+ * Notification plugin for Craft CMS 3.x
+ *
+ * Notification index.twig
+ *
+ * @author    Fatfish
+ * @copyright Copyright (c) 2018 Fatfish
+ * @link      https://fatfish.com.au
+ * @package   Notification
+ * @since     1.0.0
+ */
+#}
+
+{% extends "_layouts/cp" %}
+{% import "_includes/forms" as forms %}
+
+{#{% do view.registerAssetBundle("fatfish\\notification\\assetbundles\\notification\\NotificationAsset") %}#}
+{% do view.registerAssetBundle("fatfish\\notification\\assetbundles\\indexcpsection\\IndexCPSectionAsset") %}
+
+{# Link for the ? icon at the bottom of the page #}
+{#{% set docsUrl = "https://github.com/fatfishdigital/notification/blob/master/README.md" %}#}
+
+{# The title of this CP section #}
+{% set title = "Notification" %}
+
+{# The URL to this plugin's base CP section #}
+{#{% set pluginCpUrl = url('notification') %}#}
+
+{# Get a URL to an image in our AssetBundle #}
+{#{% set iconUrl = view.getAssetManager().getPublishedUrl('@fatfish/notification/assetbundles/indexcpsection/dist', true) ~ '/img/Index-icon.svg' %}#}
+
+{% block sidebar%}
+<nav>
+    <ul>
+        <li><a href="{{ siteUrl }}admin/notification" class="sel">Server Notification</a> </li>
+        <li><a href="{{ siteUrl }}admin/notification/craft">Craft Notification</a></li>
+        <li><a href="#">Notification Settings</a></li>
+        <li><a href="#">Settings</a></li>
+    </ul>
+</nav>
+{% endblock %}
+{% block content %}
+
+
+<form method="post" action="{{ siteUrl }}admin/notification/save" accept-charset="UTF-8">
+
+    {% if server.id is defined %} {% set id=server.id %} {% else %} {% set id=null %}{% endif %}
+    {% if server.server_name is defined %} {% set name=server.server_name %} {% else %}{% set name=null %}{% endif %}
+    {% if server. server_port is defined %} {% set port=server.server_port %} {% else %} {% set port=null %}{% endif %}
+    {% if server.server_threshold is defined %} {% set threshold=server.server_threshold %} {% else %} {% set threshold=null %}{% endif %}
+
+
+
+
+
+    <input id="server_id" name="server_id" value="{{ id }}" hidden/>
+    {{ csrfInput() }}
+    {{ forms.textField({
+        id:'server_name',
+        name:'server_name',
+        label : 'Name',
+        instructions:'Give your server name eg. Mysql',
+        value : name,
+        required :true
+    }) }}
+
+    {{ forms.textField({
+        id:'server_port',
+        name: 'server_port',
+        label: 'Port',
+        instructions: 'Specify the port that server is running eg. 3306 for Mysql',
+        value : port,
+        required : true,
+    }) }}
+    {{
+        forms.textField({
+            id:'server_threshold',
+            name : 'server_threshold',
+            label: 'Threshold',
+            instructions:'Number of Failed checks before it sends alert',
+            value : threshold,
+            required : true
+        })
+    }}
+
+    <button type="submit" value="submit" class="btn btn-success">Save</button>
+</form>
+    <br>
+    <div class="tableview">
+            <table class="data fullwidth collapsing">
+                <thead>
+                <tr>
+                    <th>Server Name</th>
+                    <th>Server Port</th>
+                    <th>Threshold</th>
+                    <th>Status</th>
+                    <th>Last check</th>
+                    <th>Action</th>
+                </tr>
+
+                </thead>
+                <tbody>
+
+
+
+                    {% if Servers is defined  and Servers is iterable%}
+
+                {% for server in Servers %}
+                <tr>
+                    <td>{{ server.server_name }}</td>
+                    <td>{{ server.server_port }}</td>
+                    <td>{{ server.server_threshold }}</td>
+                    <td>{% if server.server_status is defined and server.server_status is null %}<span class="status off "></span>Offline{% else %} <span class="status on"></span>Online{% endif %}</td>
+                    <td>{% if server.server_last_check is defined and server.server_last_check is not null %}{{ server.server_last_check }} Min Ago {% else %} 0 Min Ago {% endif %}</td>
+                    <td><a href="/admin/notification/edit/{{ server.id }}"> Edit</a> &nbsp; <a href="/admin/notification/delete/{{ server.id }}">Delete</a></td>
+                </tr>
+
+                {% endfor %}
+
+
+                {% endif %}
+
+                </tbody>
+            </table>
+    </div>
+{% endblock %}

@@ -1,0 +1,43 @@
+{
+    "name": "fatfish/notification",
+    "description": "Notification plugin for craft 3.x",
+    "type": "craft-plugin",
+    "version": "1.0.0",
+    "keywords": [
+        "craft",
+        "cms",
+        "craftcms",
+        "craft-plugin",
+        "notification"
+    ],
+    "support": {
+        "docs": "https://github.com/fatfishdigital/notification/blob/master/README.md",
+        "issues": "https://github.com/fatfishdigital/notification/issues"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Fatfish",
+            "homepage": "https://fatfish.com.au"
+        }
+    ],
+    "require": {
+        "craftcms/cms": "^3.0.0-RC1"
+    },
+    "autoload": {
+        "psr-4": {
+          "fatfish\\notification\\": "src/"
+        }
+    },
+    "extra": {
+        "name": "Notification",
+        "handle": "notification",
+        "hasCpSettings": false,
+        "hasCpSection": true,
+        "changelogUrl": "https://raw.githubusercontent.com/fatfishdigital/notification/master/CHANGELOG.md",
+        "components": {
+            "notificationService": "fatfish\\notification\\services\\NotificationService"
+        },
+        "class": "fatfish\\notification\\Notification"
+    }
+}
