@@ -27,6 +27,9 @@
         public $title;
         public $fileSize;
         public $fileType;
+        public $firstname;
+        public $lastname;
+        public $email;
 
 
 
@@ -73,15 +76,6 @@
 
 
         }
-        public function actionOnElements($event)
-        {
-            var_dump($event->action);die;
-         $this->ParseElement($event);
-
-
-
-        }
-
         public function ParseElement($event)
         {
 
@@ -104,18 +98,23 @@
                     $this->fileType = $event->element->kind;
                     $this->ElementType = 'Asset';
                     break;
-                case $event instanceof \craft\events\ElementEvent:
+                case $event->element instanceof \craft\elements\User:
 
                     $this->UserName = Craft::$app->getUser()->identity->username;
+                    $this->title = $event->element->username;
+                    $this->firstname = $event->element->firstname;
+                    $this->lastname = $event->element->lastname;
+                    $this->email    = $event->element->email;
+                    $this->ElementType = 'User';
+                    break;
+                case $event->element instanceof \craft\elements\Category:
                     $this->title = $event->element->title;
-                    $this->fileSize = $event->element->size;
-                    $this->fileType = $event->element->kind;
-                    $this->ElementType = 'Asset';
+                    $this->UserName = Craft::$app->getUser()->identity->username;
+                    $this->createdDate = (array)$event->element->dateCreated;
+                    $this->updatedDate = (array)$event->element->dateUpdated;
+                    $this->ElementType = 'Category';
                     break;
-                case $event instanceof \craft\events\ElementActionEvent:
-                       $this->ElementType='Asset';
-                       
-                    break;
+
 
 
 

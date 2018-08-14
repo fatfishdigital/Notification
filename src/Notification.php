@@ -11,7 +11,9 @@
 namespace fatfish\notification;
 
 
+use craft\base\ElementAction;
 use craft\elements\actions\DeleteAssets;
+use craft\elements\Tag;
 use fatfish\notification\controllers\ElementsController;
 use fatfish\notification\services\ServerNotificationService as NotificationServiceService;
 use fatfish\notification\widgets\NotificationWidget as NotificationWidgetWidget;
@@ -157,13 +159,8 @@ class Notification extends Plugin
                 $ElementsController->actionOnSaveElementEvent($event);
             });
 
-            Event::on(Elements::class,Elements::EVENT_AFTER_PERFORM_ACTION,function($event) {
-                $ElementsController = new ElementsController();
-                $ElementsController->actionOnElements($event);
-            });
 
-            Event::on(Elements::class,Elements::EVENT_AFTER_DELETE_ELEMENT,function($event)
-            {
+            Event::on(Elements::class,Elements::EVENT_AFTER_DELETE_ELEMENT,function ($event){
                 $ElementsController = new ElementsController();
                 $ElementsController->actionOnDeleteElements($event);
             });
