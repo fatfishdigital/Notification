@@ -52,7 +52,7 @@
             required :true
         }) }}
 
-        <div class="field">
+        <div class="field" id="ElementType">
             <div class="heading">
         <label for="element_type" class="required">Element Type </label> <br>
                 <div class="instructions">Choose Element Type eg. Entries,Assets,Category,GlobalSet,MatrixBlock,Tag,User</div>
@@ -60,12 +60,39 @@
             id:'element_type',
             name: 'element_type',
             label: 'Element Type',
-            options : ['Entries','Assets','Category','GlobalSet','MatrixBlock','Tag','User'],
-            instructions: 'Choose Element Type eg. Entries,Assets,Category,GlobalSet,MatrixBlock,Tag,User',
+            options : ['Choose Item','Entries','Assets','Category','User'],
+            instructions: 'Choose Element Type eg. Entries,Assets,Category,User',
             required : true,
         }) }}
             </div>
         </div>
+
+        <div class="field" id="sectionType" style="display: none">
+            <div class="heading">
+                <label for="element_type" class="required">Section Type </label> <br>
+                <div class="instructions">Choose Section Type eg. Structure,Chanel</div>
+                {{ forms.select({
+                    id:'section_type',
+                    name: 'section_type',
+                    label: 'Section Type',
+                    options : ['Channel','Structure'],
+                    }) }}
+            </div>
+        </div>
+
+        <div class="field" id="EntriesList" style="display:none;">
+            <div class="heading">
+                <label for="element_type" class="required">Entries </label> <br>
+                <div class="instructions">Choose Section Type eg. Structure,Chanel</div>
+                {{ forms.select({
+                    id:'entries',
+                    name: 'entries',
+                    label: 'Entries',
+                    options : ['All','Assets','Category','User'],
+                }) }}
+            </div>
+        </div>
+
 
         <div class="field">
             <div class="heading">
@@ -84,12 +111,31 @@
 {% endblock %}
 {% js %}
     $(document).ready(function(){
-
+    var selectedEntryType;
+    var SectionId=0;
     $('#element_type').on('change',function() {
 
-            var selectedEntryType = $('#element_type').val();
-        console.log(selectedEntryType);
+             selectedEntryType = parseInt($('#element_type').val());
 
+             if(selectedEntryType==1)
+                {
+
+                    $('#sectionType').css('display','block');
+                    $('#EntriesList').css('display','block');
+
+                    if(SectionId==0)
+                       {
+                                    console.log('test');
+                        }
+
+
+                }
+
+
+    });
+    $('#section_type').on('change',function(){
+        SectionId = $('#section_type').val();
+        console.log(Craft);
 
     });
 

@@ -52,13 +52,13 @@
              if($this->createdDate['date']===$this->updatedDate['date'])
              {
                  $data = [
-                     'text'=>'A new '.$ElementType. ' has been Created By '.$this->UserName. ' [ Title: '.$this->title.' Created Date: '.$this->createdDate['date'].']'
+                     'text'=>$ElementType. ' has been Created By '.$this->UserName. ' [ Title: '.$this->title.' Created Date: '.$this->createdDate['date'].']'
                  ];
              }
              else
              {
                  $data = [
-                     'text'=>'A new '.$ElementType. ' has been updated By '.$this->UserName. ' [ `Title: ` `'.$this->title.'` Updated Date: '.$this->createdDate['date'].']'
+                     'text'=>$ElementType. ' has been updated By '.$this->UserName. ' [ `Title: ` `'.$this->title.'` Updated Date: '.$this->createdDate['date'].']'
                  ];
              }
 
@@ -106,6 +106,7 @@
                     $this->fileType = $event->element->kind;
                     $this->ElementType = 'Asset';
                     break;
+
                 case $event->element instanceof \craft\elements\User:
 
                     $this->UserName = Craft::$app->getUser()->identity->username;
@@ -115,6 +116,7 @@
                     $this->email    = $event->element->email;
                     $this->ElementType = 'User';
                     break;
+
                 case $event->element instanceof \craft\elements\Category:
                     $this->title = $event->element->title;
                     $this->UserName = Craft::$app->getUser()->identity->username;
@@ -127,15 +129,6 @@
 
 
                 default:
-
-
-
-
-
-
-
-
-
 
 
             }
