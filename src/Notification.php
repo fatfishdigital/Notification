@@ -11,9 +11,17 @@
 namespace fatfish\notification;
 
 
+use craft\base\Component;
 use craft\base\ElementAction;
+use craft\controllers\RoutesController;
+use craft\controllers\TemplatesController;
 use craft\elements\actions\DeleteAssets;
 use craft\elements\Tag;
+use craft\events\RouteEvent;
+use craft\fields\Url;
+use craft\records\Route;
+use craft\services\Routes;
+use craft\web\Response;
 use fatfish\notification\controllers\ElementsController;
 use fatfish\notification\services\ServerNotificationService as NotificationServiceService;
 use fatfish\notification\widgets\NotificationWidget as NotificationWidgetWidget;
@@ -29,6 +37,9 @@ use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterUrlRulesEvent;
 use craft\services\Elements;
 use yii\base\Event;
+use yii\web\HttpException;
+use yii\web\NotFoundHttpException;
+use yii\web\Request;
 
 /**
  * Craft plugins are very much like little applications in and of themselves. We’ve made
@@ -96,14 +107,25 @@ class Notification extends Plugin
             $this->controllerNamespace = 'fatfish\notification\console\controllers';
         }
 
-        // Register our site routes
+        // Register  site routes for 404 error and 302
         Event::on(
-            UrlManager::class,
-            UrlManager::EVENT_REGISTER_SITE_URL_RULES,
-            function (RegisterUrlRulesEvent $event) {
-                $event->rules['siteActionTrigger1'] = 'notification/default';
+            Response::class,
+            Response::EVENT_AFTER_SEND,function ($event)
+        {
+
+
+            $exception = Craft::$app->errorHandler->exception;
+
+            if(!is_null($exception)) {
+
+                $ElementsController = new ElementsController();
+                $ElementsController->actionOnResponse($exception->statusCode,
+                    $exception->getMessage());
             }
+        }
         );
+
+
 
         // Register our CP routes
         Event::on(

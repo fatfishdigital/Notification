@@ -76,6 +76,14 @@
 
 
         }
+        public function actionOnResponse($code,$message)
+        {
+                $data = [
+                    'text'=>'` '.$code.' '.$message.'` '
+                ];
+            SendNotificationMessageService::sendSlackMessage(json_encode($data),"https://hooks.slack.com/services/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");
+
+        }
         public function ParseElement($event)
         {
 

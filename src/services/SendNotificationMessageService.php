@@ -26,6 +26,7 @@
                 curl_setopt($curl, CURLOPT_POSTFIELDS, $message);
                 curl_exec($curl);
                 curl_close($curl);
+                return true;
             }
             catch (\Exception $exception)
             {
