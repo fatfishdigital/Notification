@@ -107,7 +107,7 @@ class Notification extends Plugin
             $this->controllerNamespace = 'fatfish\notification\console\controllers';
         }
 
-        // Register  site routes for 404 error and 302
+//         Register  site routes for 404 error and 302
         Event::on(
             Response::class,
             Response::EVENT_AFTER_SEND,function ($event)
@@ -127,12 +127,14 @@ class Notification extends Plugin
 
 
 
+
+
         // Register our CP routes
         Event::on(
             UrlManager::class,
-            UrlManager::EVENT_REGISTER_CP_URL_RULES,
+            UrlManager::EVENT_REGISTER_SITE_URL_RULES,
             function (RegisterUrlRulesEvent $event) {
-                $event->rules['cpActionTrigger1'] = 'notification/default/do-something';
+                $event->rules['notification/section'] = 'notification/notification/section';
             }
         );
 
@@ -145,6 +147,7 @@ class Notification extends Plugin
                 $event->rules['notification'] = 'notification/notification/index';
                 $event->rules['notification/edit/<id:\d+>'] = 'notification/notification/edit';
                 $event->rules['notification/delete/<id:\d+>'] = 'notification/notification/delete';
+
 
             });
 

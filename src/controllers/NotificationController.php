@@ -49,6 +49,7 @@
 
         public function actionCraft()
         {
+
             return $this->renderTemplate('notification/craftnotification/_craftnotification');
         }
 
@@ -77,4 +78,33 @@
              }
              return $this->renderTemplate('notification/index',['Servers'=>$this->ServerList,'server'=>null]);
          }
+
+
+         /*
+          * returns SectionType
+          * @param sectionName
+          */
+         public function actionSection()
+         {
+
+             $AllSection=[];
+             if(Craft::$app->request->isAjax)
+             {
+
+                 $SectionType = Craft::$app->request->getBodyParam('sectionHandel');
+
+                 $AllSectionType = Craft::$app->getSections()->getSectionsByType($SectionType);
+
+                 foreach ($AllSectionType as $section)
+                 {
+                     $AllSection[$section->id] = $section->name;
+
+
+
+                 }
+
+                 return json_encode($AllSection);
+             }
+
+        }
     }

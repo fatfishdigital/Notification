@@ -75,7 +75,7 @@
                     id:'section_type',
                     name: 'section_type',
                     label: 'Section Type',
-                    options : ['Channel','Structure'],
+                    options : ['choose section Type','Channel','Structure'],
                     }) }}
             </div>
         </div>
@@ -88,7 +88,7 @@
                     id:'entries',
                     name: 'entries',
                     label: 'Entries',
-                    options : ['All','Assets','Category','User'],
+
                 }) }}
             </div>
         </div>
@@ -97,9 +97,71 @@
         <div class="field">
             <div class="heading">
                 <label for="" class="required">Select Events To Notify</label>
-                <div class="instructions">Eg. Notify On Create Entries,Delete Entries, Create User etc.</div>
+                <div class="instructions">Notify On Create </div>
                 <div class="events">
+                <div class="row">
+                    {{ forms.lightswitch(
+                        {
+                            id:'element_create',
+                            name:'Create',
+                            value:'Create',
 
+                        }
+                    ) }}
+                </div>
+
+                </div>
+            </div>
+
+            <div class="heading">
+
+                <div class="instructions">Notify On Update </div>
+                <div class="events">
+                    <div class="row">
+                        {{ forms.lightswitch(
+                            {
+                                id:'element_update',
+                                name:'update',
+                                value:'update',
+
+                            }
+                        ) }}
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="heading">
+
+                <div class="instructions">Notify On Delete </div>
+                <div class="events">
+                    <div class="row">
+                        {{ forms.lightswitch(
+                            {
+                                id:'element_delete',
+                                name:'Delete',
+                                value:'delete',
+
+                            }
+                        ) }}
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="heading">
+                           <div class="instructions">Notify On Errors (such as 404 and 302)  </div>
+                <div class="events">
+                    <div class="row">
+                        {{ forms.lightswitch(
+                            {
+                                id:'element_response',
+                                name:'Response',
+                                value:'Response',
+
+                            }
+                        ) }}
+                    </div>
 
                 </div>
             </div>
@@ -110,9 +172,10 @@
     </form>
 {% endblock %}
 {% js %}
+
     $(document).ready(function(){
     var selectedEntryType;
-    var SectionId=0;
+    var SectionId=1;
     $('#element_type').on('change',function() {
 
              selectedEntryType = parseInt($('#element_type').val());
@@ -125,21 +188,50 @@
 
                     if(SectionId==0)
                        {
-                                    console.log('test');
+
                         }
 
 
                 }
+    else
+    {
+    $('#sectionType').css('display','none');
+    $('#EntriesList').css('display','none');
+    }
 
 
     });
     $('#section_type').on('change',function(){
+
+        var SectionName='channel';
         SectionId = $('#section_type').val();
-        console.log(Craft);
+
+        if(parseInt(SectionId)===1)
+        {
+                SectionName='channel';
+        }
+        else if(parseInt(SectionId)===2)
+        {
+    SectionName='structure';
+        }
+    else{
+    }
+
+
+    Craft.postActionRequest('/notification/section',{sectionHandel:SectionName},function(response){
+            $('#entries').html("");
+       $.each(response,function(key,value)
+             {
+          $('#entries').append($("<option></option>")
+    .attr("value",key)
+    .text(value));
+            });
+    });
 
     });
 
 
 
     });
+
 {% endjs %}
