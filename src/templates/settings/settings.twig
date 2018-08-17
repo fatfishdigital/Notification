@@ -1,0 +1,53 @@
+{# @var craft \craft\web\twig\variables\CraftVariable #}
+{#
+/**
+ * Notification plugin for Craft CMS 3.x
+ *
+ * Notification index.twig
+ *
+ * @author    Fatfish
+ * @copyright Copyright (c) 2018 Fatfish
+ * @link      https://fatfish.com.au
+ * @package   Notification
+ * @since     1.0.0
+ */
+#}
+
+{% extends "_layouts/cp" %}
+{% import "_includes/forms" as forms %}
+
+{#{% do view.registerAssetBundle("fatfish\\notification\\assetbundles\\notification\\NotificationAsset") %}#}
+{% do view.registerAssetBundle("fatfish\\notification\\assetbundles\\indexcpsection\\IndexCPSectionAsset") %}
+
+{# Link for the ? icon at the bottom of the page #}
+{#{% set docsUrl = "https://github.com/fatfishdigital/notification/blob/master/README.md" %}#}
+
+{# The title of this CP section #}
+{% set title = "Notification" %}
+
+{# The URL to this plugin's base CP section #}
+{#{% set pluginCpUrl = url('notification') %}#}
+
+{# Get a URL to an image in our AssetBundle #}
+{#{% set iconUrl = view.getAssetManager().getPublishedUrl('@fatfish/notification/assetbundles/indexcpsection/dist', true) ~ '/img/Index-icon.svg' %}#}
+
+{% block sidebar%}
+    <nav>
+        <ul>
+            <li><a href="{{ siteUrl }}admin/notification">Server Notification</a> </li>
+            <li><a href="{{ siteUrl }}admin/notification/craft" >Craft Notification</a></li>
+            <li><a href="{{ siteUrl }}admin/notification/settings" class="sel">Notification Settings</a></li>
+
+        </ul>
+    </nav>
+{% endblock %}
+{% block content %}
+    <form method="post" action="{{ siteUrl }}admin/notification/savesettings" accept-charset="UTF-8">
+        {{ csrfInput() }}
+
+
+        <button type="submit" value="submit" class="btn btn-success">Save</button>
+    </form>
+    <br>
+    {% endblock %}
+
