@@ -147,6 +147,10 @@ class Notification extends Plugin
                 $event->rules['notification'] = 'notification/notification/index';
                 $event->rules['notification/edit/<id:\d+>'] = 'notification/notification/edit';
                 $event->rules['notification/delete/<id:\d+>'] = 'notification/notification/delete';
+                $event->rules['notification/savenotification']='notification/notification/savenotification';
+                $event->rules['notification/settings'] = 'notification/notification/setting';
+                $event->rules['notification/craftedit/<id:\d+>'] = 'notification/notification/craftnotificationedit';
+                $event->rules['notification/deletenotification/<id:\d+>'] = 'notification/notification/deletecraftnotification';
 
 
             });

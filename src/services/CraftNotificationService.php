@@ -21,6 +21,25 @@
         public function SaveCraftNotification(CraftNotificationModel $craftnotification)
         {
 
+           if(isset($craftnotification->id) && !empty($craftnotification->id))
+           {
+               $CraftNotificationRecord = NotificationRecord::findOne(['id'=>$craftnotification->id]);
+               $CraftNotificationRecord->Notification_name=$craftnotification->Notification_name;
+               $CraftNotificationRecord->Notification_type=$craftnotification->Notification_type;
+               $CraftNotificationRecord->Notification_section=$craftnotification->Notification_section;
+               $CraftNotificationRecord->Notification_section_list=$craftnotification->Notification_section_list;
+               $CraftNotificationRecord->Notification_create=$craftnotification->Notification_create;
+               $CraftNotificationRecord->Notification_update=$craftnotification->Notification_update;
+               $CraftNotificationRecord->Notification_delete=$craftnotification->Notification_delete;
+               $CraftNotificationRecord->Notification_edit=$craftnotification->Notification_edit;
+               $CraftNotificationRecord->save(true);
+
+
+               return true;
+
+
+           }
+
             $CraftNotificationRecord = New NotificationRecord();
            $CraftNotificationRecord->Notification_name=$craftnotification->Notification_name;
            $CraftNotificationRecord->Notification_type=$craftnotification->Notification_type;

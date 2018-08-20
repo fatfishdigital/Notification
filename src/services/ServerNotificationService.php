@@ -21,7 +21,7 @@ use fatfish\notification\records\NotificationServerRecord;
 use yii\db\Command;
 
 /**
- * NotificationService Service
+ * CraftNotificationService Service
  *
  * All of your plugin’s business logic should go in services, including saving data,
  * retrieving data, etc. They provide APIs that your controllers, template variables,

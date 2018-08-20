@@ -36,21 +36,49 @@
         <ul>
             <li><a href="{{ siteUrl }}admin/notification">Server Notification</a> </li>
             <li><a href="{{ siteUrl }}admin/notification/craft" class="sel">Craft Notification</a></li>
-            <li><a href="#">Notification Settings</a></li>
-            <li><a href="#">Settings</a></li>
+            <li><a href="{{ siteUrl }}admin/notification/settings">Notification Settings</a></li>
+
         </ul>
     </nav>
 {% endblock %}
 {% block content %}
-    <form method="post" action="{{ siteUrl }}admin/notification/save" accept-charset="UTF-8">
+    <form method="post" action="{{ siteUrl }}admin/notification/savenotification" accept-charset="UTF-8">
         {{ csrfInput() }}
+        {% set id=null %}
+        {% set elementname=null %}
+        {% set elementtype=null %}
+        {% set elementsection=null %}
+        {% set entries=null %}
+        {% set create=false %}
+        {% set update=false %}
+        {% set delete=false %}
+        {% set response=false %}
+
+        {% for notification in notifications %}
+
+            {% set id = notification.id %}
+            {% set elementname = notification.Notification_name %}
+            {% set elementtype = notification.Notification_type %}
+            {% set create = notification.Notification_create %}
+            {% set update = notification.Notification_update %}
+            {% set delete = notification.Notification_delete %}
+
+
+
+
+        {% endfor %}
+        <input type="text" id="id" name="id" value="{{ id }}" hidden>
+
         {{ forms.textField({
             id:'element_name',
             name:'element_name',
             label : 'Name',
+            value : elementname,
             instructions:'Give your Element Notification name eg. Entries Notification',
             required :true
-        }) }}
+        })
+
+        }}
 
         <div class="field" id="ElementType">
             <div class="heading">
@@ -61,6 +89,7 @@
             name: 'element_type',
             label: 'Element Type',
             options : ['Choose Item','Entries','Assets','Category','User'],
+            value : elementtype,
             instructions: 'Choose Element Type eg. Entries,Assets,Category,User',
             required : true,
         }) }}
@@ -88,6 +117,7 @@
                     id:'entries',
                     name: 'entries',
                     label: 'Entries',
+                    required: true,
 
                 }) }}
             </div>
@@ -104,7 +134,9 @@
                         {
                             id:'element_create',
                             name:'Create',
-                            value:'Create',
+                            on: create
+
+
 
                         }
                     ) }}
@@ -122,7 +154,8 @@
                             {
                                 id:'element_update',
                                 name:'update',
-                                value:'update',
+                                on: update,
+
 
                             }
                         ) }}
@@ -140,7 +173,8 @@
                             {
                                 id:'element_delete',
                                 name:'Delete',
-                                value:'delete',
+                                on: delete,
+
 
                             }
                         ) }}
@@ -156,8 +190,25 @@
                         {{ forms.lightswitch(
                             {
                                 id:'element_response',
-                                name:'Response',
-                                value:'Response',
+                                name:'RequestResponse',
+                                on:response,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
                             }
                         ) }}
@@ -170,7 +221,49 @@
 
         <button type="submit" value="submit" class="btn btn-success">Save</button>
     </form>
+    <br>
+<div class="tableview">
+    <table class="data fullwidth">
+
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Notify on Create Event</th>
+<th>Notify on Update Event</th>
+<th>Notify on Delete Event</th>
+<th>Notify on 404/302 Event</th>
+<th>Actions</th>
+</tr>
+</thead>
+<tbody>
+
+{% for notification in notifications %}
+
+    <tr>
+        <td>{{ notification.Notification_name }}</td>
+        <td>{{ notification.Notification_type }}</td>
+        <td>{% if notification.Notification_create==(1) %} Yes {% else %} No {% endif %}</td>
+        <td>{% if notification.Notification_update==(1) %} Yes {% else %} No {% endif %}</td>
+        <td>{% if notification.Notification_delete==(1) %} Yes {% else %} No {% endif %}</td>
+        <td>{% if notification.Notification_edit==(1) %} Yes {% else %} No {% endif %}</td>
+        <td><a href="/admin/notification/craftedit/{{ notification.id }}">Edit</a> <a href="/admin/notification/deletenotification/{{ notification.id }}">Delete</a> </td>
+
+    </tr>
+{% endfor %}
+</tbody>
+
+
+    </table>
+</div>
 {% endblock %}
+
+
+
+
+
+
+
 {% js %}
 
     $(document).ready(function(){
@@ -222,9 +315,9 @@
             $('#entries').html("");
        $.each(response,function(key,value)
              {
-          $('#entries').append($("<option></option>")
-    .attr("value",key)
-    .text(value));
+                  $('#entries').append($("<option></option>")
+                    .attr("value",value)
+                    .text(value));
             });
     });
 

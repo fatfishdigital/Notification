@@ -42,9 +42,77 @@
     </nav>
 {% endblock %}
 {% block content %}
-    <form method="post" action="{{ siteUrl }}admin/notification/savesettings" accept-charset="UTF-8">
+    <form method="post" action="{{ siteUrl }}admin/notification/settings" accept-charset="UTF-8">
         {{ csrfInput() }}
+        {% set id=null %}
+        {% set email=null %}
+        {% set slack=null %}
+        {% set craftslack=null %}
+        {% set craftemail=null %}
 
+        {% for setting in settings %}
+            {% set id=setting.id %}
+            {% set email=setting.email %}
+            {% set slack=setting.email %}
+            {% set craftslack=setting.craftslack %}
+            {% set craftemail=setting.craftemail %}
+
+
+
+
+
+
+        {% endfor %}
+        <input type="text" id="id" name="id" value="{% if id is defined %}{{ id }}{% endif %}" hidden>
+            <span>System Notification </span>
+        <hr>
+
+        {{ forms.textfield({
+            id:'system_email',
+            name:'email',
+            label: 'Email',
+            value: email,
+            instructions: 'Enter your email address to notify, Use comma to use more than one email address'
+
+
+        })
+
+        }}
+
+        {{
+            forms.textfield({
+                id : 'slack',
+                name : 'Slack',
+                label : 'Slack API',
+                value: slack,
+                instructions: 'Enter your slack api if you have any '
+            })
+        }}
+
+
+        <div class="heading"><span>Craft Notification</span></div>
+        <hr>
+        <br>
+        {{ forms.textfield({
+            id:'craft_email',
+            name:'craftemail',
+            label: 'Email',
+            value : craftemail,
+            instructions: 'Enter your email address to notify, Use comma to use more than one email address'
+
+
+        })
+
+        }}
+        {{
+        forms.textfield({
+            id : 'craftslack',
+            name : 'craftSlack',
+            label : 'Slack API',
+            value : craftslack,
+            instructions: 'Enter your slack api if you have any '
+        })
+        }}
 
         <button type="submit" value="submit" class="btn btn-success">Save</button>
     </form>

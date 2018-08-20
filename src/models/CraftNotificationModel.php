@@ -20,6 +20,7 @@
         public $Notification_delete;
         public $Notification_edit;
         public $Notification_RequestResponse;
+        public $id;
         public function rules()
         {
 
