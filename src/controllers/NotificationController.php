@@ -148,6 +148,16 @@
 
             }
             $NotifcationSettingRecords = NotificationSettingRecord::find()->all();
+
+            if(!is_null($NotifcationSettingRecords) and is_array($NotifcationSettingRecords))
+            {
+
+                Craft::$app->session->set('setting',$NotifcationSettingRecords);
+
+
+            }
+
+
             return $this->renderTemplate('notification/settings/settings', ['settings' => $NotifcationSettingRecords]);
         }
 

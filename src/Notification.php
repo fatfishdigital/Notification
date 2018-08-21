@@ -190,6 +190,7 @@ class Notification extends Plugin
 
 
             Event::on(Elements::class,Elements::EVENT_AFTER_DELETE_ELEMENT,function ($event){
+
                 $ElementsController = new ElementsController();
                 $ElementsController->actionOnDeleteElements($event);
             });

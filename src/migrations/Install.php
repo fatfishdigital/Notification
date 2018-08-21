@@ -201,10 +201,10 @@
         {
              $this->createTable('{{%NotificationSettings}}',[
                 'id'             =>$this->primaryKey(),
-                'email'          =>$this->string(200),
-                'slack'          =>$this->string(45),
-                'craftemail'     =>$this->string(200),
-                'craftslack'     =>$this->string(45),
+                'email'          =>$this->string(500),
+                'slack'          =>$this->string(500),
+                'craftemail'     =>$this->string(500),
+                'craftslack'     =>$this->string(500),
                 'uid'            =>$this->uid(),
                 'dateCreated'    =>$this->dateTime()->notNull(),
                 'dateUpdated'    =>$this->dateTime()->notNull()

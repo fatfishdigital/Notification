@@ -66,7 +66,6 @@
         <input type="text" id="id" name="id" value="{% if id is defined %}{{ id }}{% endif %}" hidden>
             <span>System Notification </span>
         <hr>
-
         {{ forms.textfield({
             id:'system_email',
             name:'email',
@@ -89,10 +88,9 @@
             })
         }}
 
-
-        <div class="heading"><span>Craft Notification</span></div>
+<br>
+        <div class="heading"><label>Craft Notification</></div>
         <hr>
-        <br>
         {{ forms.textfield({
             id:'craft_email',
             name:'craftemail',
