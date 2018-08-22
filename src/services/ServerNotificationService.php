@@ -123,4 +123,16 @@ class ServerNotificationService extends Component
         return true;
     }
 
+    public static function UpdateServerStatus($id,$status)
+    {
+
+       $Serverlogs= NotificationServerLogRecord::findOne(['server_id'=>$id]);
+
+       $Serverlogs->server_id = $id;
+       $Serverlogs->server_status = $status;
+
+       $Serverlogs->save();
+
+          }
+
 }

@@ -10,6 +10,7 @@
 
 namespace fatfish\notification\console\controllers;
 
+use fatfish\notification\controllers\ServerStatusController;
 use fatfish\notification\Notification;
 
 use Craft;
@@ -58,11 +59,8 @@ class ConsoleController extends Controller
      */
     public function actionIndex()
     {
-        $result = 'something';
 
-        echo "Welcome to the console ConsoleController actionIndex() method\n";
-
-        return $result;
+       self::actionSetcronjob();
     }
 
     /**
@@ -77,23 +75,26 @@ class ConsoleController extends Controller
     {
         if(Craft::$app->request->isConsoleRequest) {
 
-            $AllServer = NotificationServerRecord::find()->all();
-            var_dump($AllServer);
+           ServerStatusController::check_server_status();
+            return;
+
         }
-        echo "Sorry Not authorize to perform";
+        echo "Sorry unauthorize action detected";
     }
 
-    public static function setcronjob()
+    public static function actionSetcronjob()
     {
+
         $job2 = new \Cron\Job\ShellJob();
-        $job2->setCommand('mkdir Hellworld');
+        $job2->setCommand('./craft notification/console/check-server-logs');
         $job2->setSchedule(new \Cron\Schedule\CrontabSchedule('*/1 * * * *'));
         $resolver = new \Cron\Resolver\ArrayResolver();
         $resolver->addJob($job2);
         $cron = new \Cron\Cron();
         $cron->setExecutor(new \Cron\Executor\Executor());
         $cron->setResolver($resolver);
-var_dump($cron->run());
+        $cron->run();
+
 
     }
 }
