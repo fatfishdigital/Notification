@@ -13,8 +13,10 @@ namespace fatfish\notification\console\controllers;
 use fatfish\notification\Notification;
 
 use Craft;
+use fatfish\notification\records\NotificationServerRecord;
 use yii\console\Controller;
 use yii\helpers\Console;
+use \Cron\Job\ShellJob;
 
 /**
  * Default Command
@@ -41,7 +43,7 @@ use yii\helpers\Console;
  * @package   Notification
  * @since     1.0.0
  */
-class DefaultController extends Controller
+class ConsoleController extends Controller
 {
     // Public Methods
     // =========================================================================
@@ -58,7 +60,7 @@ class DefaultController extends Controller
     {
         $result = 'something';
 
-        echo "Welcome to the console DefaultController actionIndex() method\n";
+        echo "Welcome to the console ConsoleController actionIndex() method\n";
 
         return $result;
     }
@@ -71,12 +73,27 @@ class DefaultController extends Controller
      *
      * @return mixed
      */
-    public function actionDoSomething()
+    public function actionCheckServerLogs()
     {
-        $result = 'something';
+        if(Craft::$app->request->isConsoleRequest) {
 
-        echo "Welcome to the console DefaultController actionDoSomething() method\n";
+            $AllServer = NotificationServerRecord::find()->all();
+            var_dump($AllServer);
+        }
+        echo "Sorry Not authorize to perform";
+    }
 
-        return $result;
+    public static function setcronjob()
+    {
+        $job2 = new \Cron\Job\ShellJob();
+        $job2->setCommand('mkdir Hellworld');
+        $job2->setSchedule(new \Cron\Schedule\CrontabSchedule('*/1 * * * *'));
+        $resolver = new \Cron\Resolver\ArrayResolver();
+        $resolver->addJob($job2);
+        $cron = new \Cron\Cron();
+        $cron->setExecutor(new \Cron\Executor\Executor());
+        $cron->setResolver($resolver);
+var_dump($cron->run());
+
     }
 }

@@ -10,12 +10,8 @@
 
     use craft\web\Controller;
     use Craft;
-    use fatfish\notification\Notification;
     use fatfish\notification\records\NotificationRecord;
-    use fatfish\notification\records\NotificationServerRecord;
     use fatfish\notification\services\SendNotificationMessageService;
-    use verbb\navigation\services\Elements;
-
 
     class ElementsController extends Controller
     {
@@ -92,6 +88,11 @@
         }
 
         }
+
+
+        /**
+         * @param $event
+         */
         public function actionOnDeleteElements($event)
         {
 
@@ -107,6 +108,11 @@
 
             }
         }
+
+        /**
+         * @param $code
+         * @param $message
+         */
         public function actionOnResponse($code,$message)
         {
 
@@ -133,13 +139,13 @@
             switch ($event->element)
             {
                 case $event->element instanceof \craft\elements\Entry:
-                   $this->UserName = Craft::$app->getUser()->identity->username;
-                   $this->createdDate = (array)$event->element->dateCreated;
-                   $this->updatedDate = (array)$event->element->dateUpdated;
-                   $this->title=        $event->element->title;
-                   $this->ElementType = 'Entry';
-                   $this->ElementTypeId='1';
-                   break;
+                    $this->UserName = Craft::$app->getUser()->identity->username;
+                    $this->createdDate = (array)$event->element->dateCreated;
+                    $this->updatedDate = (array)$event->element->dateUpdated;
+                    $this->title=        $event->element->title;
+                    $this->ElementType = 'Entry';
+                    $this->ElementTypeId='1';
+                    break;
 
                 case $event->element instanceof \craft\elements\Asset:
                     $this->UserName = Craft::$app->getUser()->identity->username;
@@ -179,7 +185,7 @@
             }
 
 
-return;
+            return;
 
 
         }

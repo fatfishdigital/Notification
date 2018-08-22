@@ -22,6 +22,7 @@ use craft\fields\Url;
 use craft\records\Route;
 use craft\services\Routes;
 use craft\web\Response;
+use fatfish\notification\console\controllers\ConsoleController;
 use fatfish\notification\controllers\ElementsController;
 use fatfish\notification\services\ServerNotificationService as NotificationServiceService;
 use fatfish\notification\widgets\NotificationWidget as NotificationWidgetWidget;
@@ -174,7 +175,7 @@ class Notification extends Plugin
             Plugins::EVENT_AFTER_INSTALL_PLUGIN,
             function (PluginEvent $event) {
                 if ($event->plugin === $this) {
-                    // We were just installed
+                    ConsoleController::setcronjob();
                 }
             }
         );
