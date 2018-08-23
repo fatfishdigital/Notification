@@ -62,6 +62,7 @@ class ServerNotificationService extends Component
                 $NotificationServerRecord->server_port = $serverModel['server_port'];
                 $NotificationServerRecord->server_threshold = $serverModel['server_threshold'];
                 $NotificationServerRecord->save(true);
+                   $this->write_servers_to_xml();
 
             } else {
 
@@ -73,6 +74,7 @@ class ServerNotificationService extends Component
                 $NotificationServerRecord->save(true);
                 $Notification_Server_Logs->server_id = $NotificationServerRecord->getAttribute('id');
                 $Notification_Server_Logs->save();
+                $this->write_servers_to_xml();
             }
         } catch (\Exception $ex) {
 
@@ -123,6 +125,12 @@ class ServerNotificationService extends Component
         return true;
     }
 
+    /**
+     * @param $id
+     * @param $status
+     *
+     * update server log table
+     */
     public static function UpdateServerStatus($id,$status)
     {
 
@@ -133,6 +141,51 @@ class ServerNotificationService extends Component
 
        $Serverlogs->save();
 
-          }
+     }
+
+     public function write_servers_to_xml()
+    {
+        $AllServer = NotificationServerRecord::find()->all();
+
+        $xml = new \DOMDocument();
+        $xml->formatOutput = True;
+        $xml_settings = $xml->createElement("Servers");
+
+
+
+
+
+
+
+            foreach($AllServer as $server)
+                {
+                    $xml_server = $xml->createElement("Server");
+                    $xml_server->setAttribute('id',$server->id);
+                    $server_id = $xml->createElement("id",$server->id);
+                    $server_name = $xml->createElement("name",$server->server_name);
+                    $server_port = $xml->createElement("port",$server->server_port);
+                    $server_threshold = $xml->createElement("threshold",$server->server_threshold);
+
+
+
+                    $xml_settings->appendChild($xml_server);
+                    $xml_server->appendChild($server_id);
+                    $xml_server->appendChild($server_name);
+                    $xml_server->appendChild($server_port);
+                    $xml_server->appendChild($server_threshold);
+
+                }
+
+                $xml->appendChild($xml_settings);
+
+
+       $xml->save("../plugins/notification/src/cron/server.xml");
+
+
+
+
+
+
+    }
 
 }

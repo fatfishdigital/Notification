@@ -19,7 +19,7 @@
         {
 
 
-      if(isset($model->id) && !is_null($model->id)) {
+      if(!empty($model->id) && !is_null($model->id)) {
 
           $NotificationSettingRecord = NotificationSettingRecord::findOne(['id'=>$model->id]);
           $NotificationSettingRecord->id = $model->id;
@@ -27,7 +27,7 @@
           $NotificationSettingRecord->slack = $model->slack;
           $NotificationSettingRecord->craftemail = $model->craftemail;
           $NotificationSettingRecord->craftslack = $model->craftslack;
-          $NotificationSettingRecord->save(true);
+          $this->write_system_config_xml($NotificationSettingRecord);
           return true;
       }
             $NotificationSettingRecord = new NotificationSettingRecord();
@@ -36,11 +36,49 @@
             $NotificationSettingRecord->craftemail = $model->craftemail;
             $NotificationSettingRecord->craftslack = $model->craftslack;
             $NotificationSettingRecord->save(true);
+            $this->write_system_config_xml($NotificationSettingRecord);
         return true;
 
 
         }
 
+        /**
+         * @param $NotificationSettingRecord
+         */
+        public function write_system_config_xml($NotificationSettingRecord): void
+        {
+            $xml = new \DOMDocument();
+            $xml_settings = $xml->createElement("Settings");
+            $xml_server = $xml->createElement("Server");
+            $xml_craft = $xml->createElement("Craft");
+
+
+            $xml_serverslack = $xml->createElement("Slack");
+            $xml_serveremail = $xml->createElement("Email");
+
+
+            $xml_craft_email = $xml->createElement("Email");
+            $xml_craft_slack = $xml->createElement("Slack");
+            $xml_craft->appendChild($xml_craft_email);
+            $xml_craft->appendChild($xml_craft_slack);
+            $xml_craft_email->nodeValue = $NotificationSettingRecord->craftemail;
+            $xml_craft_slack->nodeValue = $NotificationSettingRecord->craftslack;
+
+            $xml_serverslack->nodeValue = $NotificationSettingRecord->slack;
+            $xml_serveremail->nodeValue = $NotificationSettingRecord->email;
+            $xml_settings->appendChild($xml_server);
+            $xml_settings->appendChild($xml_craft);
+
+            $xml_server->appendChild($xml_serverslack);
+            $xml_server->appendChild($xml_serveremail);
+
+            $xml->appendChild($xml_settings);
+
+
+            $xml->save("../plugins/notification/src/cron/system.xml");
+
+            $NotificationSettingRecord->save(true);
+        }
 
 
     }

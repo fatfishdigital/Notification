@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<Servers>
+  <Server id="1">
+    <id>1</id>
+    <name>Mysqlsssddd</name>
+    <port>3306</port>
+    <threshold>1</threshold>
+  </Server>
+
+  <Server id="2">
+    <id>2</id>
+    <name>Apache</name>
+    <port>80</port>
+    <threshold>1</threshold>
+  </Server>
+</Servers>

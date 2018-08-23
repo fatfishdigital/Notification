@@ -85,9 +85,10 @@ class ConsoleController extends Controller
     public static function actionSetcronjob()
     {
 
+
         $job2 = new \Cron\Job\ShellJob();
-        $job2->setCommand('./craft notification/console/check-server-logs');
-        $job2->setSchedule(new \Cron\Schedule\CrontabSchedule('*/1 * * * *'));
+        $job2->setCommand('php plugins/notification/src/cron/cron.php');
+        $job2->setSchedule(new \Cron\Schedule\CrontabSchedule('*/5 * * * *'));
         $resolver = new \Cron\Resolver\ArrayResolver();
         $resolver->addJob($job2);
         $cron = new \Cron\Cron();
