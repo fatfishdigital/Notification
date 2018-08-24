@@ -86,11 +86,12 @@ class ConsoleController extends Controller
     public static function actionSetcronjob()
     {
 
-        $getcurrent = __DIR__;
+        $getcurrent = dirname(dirname( dirname(__FILE__)));
+        $getcurrent = $getcurrent."/cron/cron.php";
         $cronJob = new CronJob();
         $cronJob->min = '*/2';
         $cronJob->hour = '*';
-        $cronJob->command = 'mkdir '.$getcurrent.'/test';
+        $cronJob->command = 'php '.$getcurrent;
 
         $cronTab = new CronTab();
         $cronTab->setJobs([
