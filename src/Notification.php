@@ -9,18 +9,6 @@
  */
 
 namespace fatfish\notification;
-
-
-use craft\base\Component;
-use craft\base\ElementAction;
-use craft\controllers\RoutesController;
-use craft\controllers\TemplatesController;
-use craft\elements\actions\DeleteAssets;
-use craft\elements\Tag;
-use craft\events\RouteEvent;
-use craft\fields\Url;
-use craft\records\Route;
-use craft\services\Routes;
 use craft\web\Response;
 use fatfish\notification\console\controllers\ConsoleController;
 use fatfish\notification\controllers\ElementsController;
@@ -38,9 +26,6 @@ use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterUrlRulesEvent;
 use craft\services\Elements;
 use yii\base\Event;
-use yii\web\HttpException;
-use yii\web\NotFoundHttpException;
-use yii\web\Request;
 
 /**
  * Craft plugins are very much like little applications in and of themselves. We’ve made

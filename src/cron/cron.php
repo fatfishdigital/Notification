@@ -2,6 +2,8 @@
 <?php
 
         $xml = simplexml_load_file("plugins/notification/src/cron/system.xml");
+
+        var_dump($xml);die;
     $SystemSlack = $xml->Server->Slack;
     $SystemEmail = $xml->Server->Email;
     $serverXml  = simplexml_load_file("plugins/notification/src/cron/server.xml");
