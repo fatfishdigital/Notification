@@ -17,7 +17,8 @@ use Craft;
 use fatfish\notification\records\NotificationServerRecord;
 use yii\console\Controller;
 use yii\helpers\Console;
-use \Cron\Job\ShellJob;
+use yii2tech\crontab\CronTab;
+use yii2tech\crontab\CronJob;
 
 /**
  * Default Command
@@ -85,16 +86,18 @@ class ConsoleController extends Controller
     public static function actionSetcronjob()
     {
 
+        $getcurrent = __DIR__;
+        $cronJob = new CronJob();
+        $cronJob->min = '*/2';
+        $cronJob->hour = '*';
+        $cronJob->command = 'mkdir '.$getcurrent.'/test';
 
-        $job2 = new \Cron\Job\ShellJob();
-        $job2->setCommand('php plugins/notification/src/cron/cron.php');
-        $job2->setSchedule(new \Cron\Schedule\CrontabSchedule('*/5 * * * *'));
-        $resolver = new \Cron\Resolver\ArrayResolver();
-        $resolver->addJob($job2);
-        $cron = new \Cron\Cron();
-        $cron->setExecutor(new \Cron\Executor\Executor());
-        $cron->setResolver($resolver);
-        $cron->run();
+        $cronTab = new CronTab();
+        $cronTab->setJobs([
+            $cronJob
+        ]);
+        $cronTab->apply();
+
 
 
     }
