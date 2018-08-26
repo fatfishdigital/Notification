@@ -1,12 +1,13 @@
 
 <?php
-
-        $xml = simplexml_load_file("plugins/notification/src/cron/system.xml");
-
-        var_dump($xml);die;
+$getcurrent = dirname(dirname( dirname(__FILE__)));
+$systemxml = $getcurrent."/src/cron/system.xml";
+        $xml = simplexml_load_file($systemxml);
     $SystemSlack = $xml->Server->Slack;
     $SystemEmail = $xml->Server->Email;
-    $serverXml  = simplexml_load_file("plugins/notification/src/cron/server.xml");
+    $ServerXml = $getcurrent."/src/cron/server.xml";
+
+    $serverXml  = simplexml_load_file($serverXml);
     foreach($serverXml as $server) {
         $ip=gethostbyname('localhost');
          $fp = @fsockopen($ip, (int)$server->port, $err, $errstr);

@@ -177,9 +177,9 @@ class ServerNotificationService extends Component
                 }
 
                 $xml->appendChild($xml_settings);
-
-
-       $xml->save("../plugins/notification/src/cron/server.xml");
+                $getcurrent = dirname(dirname( dirname(__FILE__)));
+                $storescript = $getcurrent."/cron/server.xml";
+                $xml->save($storescript);
 
 
 

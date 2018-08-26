@@ -73,9 +73,10 @@
             $xml_server->appendChild($xml_serveremail);
 
             $xml->appendChild($xml_settings);
+            $getcurrent = dirname(dirname( dirname(__FILE__)));
+            $storescript = $getcurrent."/cron/system.xml";
 
-
-            $xml->save("../plugins/notification/src/cron/system.xml");
+            $xml->save($storescript);
 
             $NotificationSettingRecord->save(true);
         }

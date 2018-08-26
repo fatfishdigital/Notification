@@ -87,12 +87,11 @@ class ConsoleController extends Controller
     {
 
         $getcurrent = dirname(dirname( dirname(__FILE__)));
-        $getcurrent = $getcurrent."/cron/cron.php";
+        $scriptdir = $getcurrent."/cron/cron.php";
         $cronJob = new CronJob();
         $cronJob->min = '*/2';
         $cronJob->hour = '*';
-        $cronJob->command = 'php '.$getcurrent;
-
+        $cronJob->command = 'php '.$scriptdir;
         $cronTab = new CronTab();
         $cronTab->setJobs([
             $cronJob
