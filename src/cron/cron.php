@@ -7,7 +7,7 @@ $systemxml = $getcurrent."/src/cron/system.xml";
     $SystemEmail = $xml->Server->Email;
     $ServerXml = $getcurrent."/src/cron/server.xml";
 
-    $serverXml  = simplexml_load_file($serverXml);
+    $serverXml  = simplexml_load_file($ServerXml);
     foreach($serverXml as $server) {
         $ip=gethostbyname('localhost');
          $fp = @fsockopen($ip, (int)$server->port, $err, $errstr);
