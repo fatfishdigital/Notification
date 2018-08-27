@@ -74,19 +74,19 @@
                         [
                             0 =>
                                 [
-                                    'text' => 'Author : '.$this->UserName.' Date '.$this->createdDate['date'],
+                                    'text' => $this->ElementType.': '.$this->ElementTitle.' by: '.$this->UserName.' Date '.$this->createdDate['date'],
                                     'actions' =>
                                         [
                                             0 =>
                                                 [
                                                     'type' => 'button',
-                                                    'text' => 'View Entry',
+                                                    'text' => 'View',
                                                     'url' => $this->ElementUrl,
                                                 ],
                                             1 =>
                                                 [
                                                     'type' => 'button',
-                                                    'text' => 'Edit Entry',
+                                                    'text' => 'Edit',
                                                     'url' => $this->ElementEditUrl,
                                                 ],
                                         ],
@@ -103,7 +103,7 @@
                         [
                             0 =>
                                 [
-                                    'text' => 'Author : '.$this->UserName.' Date '.$this->createdDate['date'],
+                                    'text' =>$this->ElementType.': '.$this->ElementTitle.' by: '.$this->UserName.' Date '.$this->createdDate['date'],
                                         'actions' =>
                                         [
                                             0 =>
@@ -149,7 +149,7 @@
                         [
                             0 =>
                                 [
-                                    'text' => 'Author : '.$this->UserName.' Date '.$this->createdDate['date'],
+                                    'text' => $this->ElementType.': '.$this->ElementTitle.' by: '.$this->UserName.' Date '.$this->createdDate['date'],
 
                                 ],
                         ],
@@ -196,6 +196,7 @@
                     $this->createdDate = (array)$event->element->dateCreated;
                     $this->updatedDate = (array)$event->element->dateUpdated;
                     $this->title=        $event->element->title;
+                    $this->ElementTitle = $event->element->title;
                     $this->ElementType = 'Entry';
                     $this->ElementTypeId='1';
                     if(!is_null($entryurl)) {
@@ -206,34 +207,37 @@
 
                 case $event->element instanceof craft\elements\Asset:
                     $this->UserName = Craft::$app->getUser()->identity->username;
-                    $this->title = $event->element->title;
+                    $this->ElementTitle = $event->element->title;
                     $this->fileSize = $event->element->size;
                     $this->fileType = $event->element->kind;
                     $this->ElementType = 'Asset';
                     $this->ElementTypeId='2';
+                    $this->ElementEditUrl = Craft::$app->getSites()->getCurrentSite()->baseUrl.'admin/assets';
+                    $this->ElementUrl = Craft::$app->getSites()->getCurrentSite()->baseUrl.'admin/assets';
                     break;
 
                 case $event->element instanceof craft\elements\User:
 
                     $this->UserName = Craft::$app->getUser()->identity->username;
                     $this->title = $event->element->username;
-                    $this->firstname = $event->element->firstname;
-                    $this->lastname = $event->element->lastname;
+                    $this->ElementTitle = $event->element->firstName;
+                    $this->firstname = $event->element->firstName;
+                    $this->lastname = $event->element->lastName;
                     $this->email    = $event->element->email;
                     $this->ElementType = 'User';
-                    $this->ElementTypeId='3';
-                    $this->ElementUrl='';
-                    $this->ElementEditUrl='';
+                    $this->ElementTypeId='4';
+                    $this->ElementUrl=Craft::$app->getSites()->getCurrentSite()->baseUrl.'admin/users/'.$event->element->id;
+                    $this->ElementEditUrl=Craft::$app->getSites()->getCurrentSite()->baseUrl.'admin/users/'.$event->element->id;
 
                     break;
 
                 case $event->element instanceof \craft\elements\Category:
-                    $this->title = $event->element->title;
+                    $this->ElementTitle = $event->element->title;
                     $this->UserName = Craft::$app->getUser()->identity->username;
                     $this->createdDate = (array)$event->element->dateCreated;
                     $this->updatedDate = (array)$event->element->dateUpdated;
                     $this->ElementType = 'Category';
-                    $this->ElementTypeId='4';
+                    $this->ElementTypeId='3';
                     break;
 
 
