@@ -171,7 +171,7 @@
 
            $Id= (int)$id;
            $NotificationSettingsRecord = NotificationRecord::findAll(['id'=>$Id]);
-            return $this->renderTemplate('notification/craftnotification/_craftnotification',['notifications' => $NotificationSettingsRecord]);
+            return $this->renderTemplate('notification/craftnotification/_craftnotification',['allnotifications' => $NotificationSettingsRecord]);
 
         }
 

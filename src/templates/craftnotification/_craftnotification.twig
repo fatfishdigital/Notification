@@ -54,7 +54,9 @@
         {% set delete=false %}
         {% set response=false %}
 
-        {% for notification in notifications %}
+
+        {% if allnotifications is defined and allnotifications | length > (0) %}
+        {% for notification in allnotifications %}
 
             {% set id = notification.id %}
             {% set elementname = notification.Notification_name %}
@@ -67,6 +69,7 @@
 
 
         {% endfor %}
+        {% endif %}
         <input type="text" id="id" name="id" value="{{ id }}" hidden>
 
         {{ forms.textField({
@@ -237,7 +240,7 @@
 </tr>
 </thead>
 <tbody>
-
+{% if notifications is defined and notifications | length > (0) %}
 {% for notification in notifications %}
 
     <tr>
@@ -251,6 +254,7 @@
 
     </tr>
 {% endfor %}
+{% endif %}
 </tbody>
 
 

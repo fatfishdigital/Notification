@@ -34,6 +34,8 @@
         public $SystemEmail;
         public $AllElementType;
         public $ElementTypeId;
+        public $ElementUrl;
+        public $ElementEditUrl;
 
 
 
@@ -56,6 +58,7 @@
         public function actionOnSaveElementEvent($event)
         {
 
+
             $this->ParseElement($event);
 
 
@@ -63,22 +66,61 @@
 
         if($this->SearchRequest($this->AllElementType)) {
 
-
-
-
-            $data = '';
-            $ElementType = str_replace('craft\elements\\', '',
-                Craft::$app->getElements()->getElementTypeById($event->element->id));
-
-
-
             if ($this->createdDate['date'] === $this->updatedDate['date']) {
-                $data = [
-                    'text' => $ElementType . ' has been Created By ' . $this->UserName . ' [ Title: ' . $this->title . ' Created Date: ' . $this->createdDate['date'] . ']'
+                $data =[
+                    'text' => $this->ElementType.' New',
+                    'channel' => 'C061EG9SL', //random one
+                    'attachments' =>
+                        [
+                            0 =>
+                                [
+                                    'text' => 'Author : '.$this->UserName.' Date '.$this->createdDate['date'],
+                                    'actions' =>
+                                        [
+                                            0 =>
+                                                [
+                                                    'type' => 'button',
+                                                    'text' => 'View Entry',
+                                                    'url' => $this->ElementUrl,
+                                                ],
+                                            1 =>
+                                                [
+                                                    'type' => 'button',
+                                                    'text' => 'Edit Entry',
+                                                    'url' => $this->ElementEditUrl,
+                                                ],
+                                        ],
+                                ],
+                        ],
                 ];
+
+
             } else {
-                $data = [
-                    'text' => $ElementType . ' has been updated By ' . $this->UserName . ' [ `Title: ` `' . $this->title . '` Updated Date: ' . $this->createdDate['date'] . ']'
+                     $data =[
+                    'text' => $this->ElementType.' Update',
+                    'channel' => 'C061EG9SL', //random one
+                    'attachments' =>
+                        [
+                            0 =>
+                                [
+                                    'text' => 'Author : '.$this->UserName.' Date '.$this->createdDate['date'],
+                                        'actions' =>
+                                        [
+                                            0 =>
+                                                [
+                                                    'type' => 'button',
+                                                    'text' => 'View',
+                                                    'url' => $this->ElementUrl,
+                                                ],
+                                            1 =>
+                                                [
+                                                    'type' => 'button',
+                                                    'text' => 'Edit',
+                                                    'url' => $this->ElementEditUrl,
+                                                ],
+                                        ],
+                                ],
+                        ],
                 ];
             }
 
@@ -96,11 +138,21 @@
         public function actionOnDeleteElements($event)
         {
 
+
             $this->ParseElement($event);
 
             if ($this->SearchRequest($this->AllElementType)) {
-                $data = [
-                    'text' => $this->ElementType . ' has been delete By ' . $this->UserName . ' [ `Title: ` `' . $this->title . '` Updated Date: ' . $this->createdDate['date'] . ']'
+                $data =[
+                    'text' => $this->ElementType.' Delete',
+                    'channel' => 'C061EG9SL', //random one
+                    'attachments' =>
+                        [
+                            0 =>
+                                [
+                                    'text' => 'Author : '.$this->UserName.' Date '.$this->createdDate['date'],
+
+                                ],
+                        ],
                 ];
 
                 SendNotificationMessageService::sendSlackMessage(json_encode($data), $this->CraftSlackUrl);
@@ -138,16 +190,21 @@
 
             switch ($event->element)
             {
-                case $event->element instanceof \craft\elements\Entry:
-                    $this->UserName = Craft::$app->getUser()->identity->username;
+                case $event->element instanceof craft\elements\Entry:
+                    $entryurl=Craft::$app->getEntries()->getEntryById($event->element->id);
+                     $this->UserName = Craft::$app->getUser()->identity->username;
                     $this->createdDate = (array)$event->element->dateCreated;
                     $this->updatedDate = (array)$event->element->dateUpdated;
                     $this->title=        $event->element->title;
                     $this->ElementType = 'Entry';
                     $this->ElementTypeId='1';
+                    if(!is_null($entryurl)) {
+                        $this->ElementUrl = Craft::$app->getSites()->getCurrentSite()->baseUrl . $entryurl->uri;
+                        $this->ElementEditUrl = Craft::$app->getSites()->getCurrentSite()->baseUrl . 'admin/entries/' . $entryurl->uri;
+                    }
                     break;
 
-                case $event->element instanceof \craft\elements\Asset:
+                case $event->element instanceof craft\elements\Asset:
                     $this->UserName = Craft::$app->getUser()->identity->username;
                     $this->title = $event->element->title;
                     $this->fileSize = $event->element->size;
@@ -156,7 +213,7 @@
                     $this->ElementTypeId='2';
                     break;
 
-                case $event->element instanceof \craft\elements\User:
+                case $event->element instanceof craft\elements\User:
 
                     $this->UserName = Craft::$app->getUser()->identity->username;
                     $this->title = $event->element->username;
@@ -165,6 +222,9 @@
                     $this->email    = $event->element->email;
                     $this->ElementType = 'User';
                     $this->ElementTypeId='3';
+                    $this->ElementUrl='';
+                    $this->ElementEditUrl='';
+
                     break;
 
                 case $event->element instanceof \craft\elements\Category:

@@ -215,4 +215,21 @@ class Notification extends Plugin
     // Protected Methods
     // =========================================================================
 
+    /**
+     * Performs actions before the plugin’s settings are saved.
+     *
+     * @return bool Whether the plugin’s settings should be saved.
+     */
+    public function beforeSaveSettings(): bool
+    {
+        // TODO: Implement beforeSaveSettings() method.
+    }
+
+    /**
+     * Performs actions after the plugin’s settings are saved.
+     */
+    public function afterSaveSettings()
+    {
+        // TODO: Implement afterSaveSettings() method.
+    }
 }
