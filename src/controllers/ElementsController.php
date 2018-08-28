@@ -10,6 +10,7 @@
 
     use craft\web\Controller;
     use Craft;
+    use DateTime;
     use fatfish\notification\records\NotificationRecord;
     use fatfish\notification\services\SendNotificationMessageService;
 
@@ -67,6 +68,8 @@
         if($this->SearchRequest($this->AllElementType)) {
 
             if ($this->createdDate['date'] === $this->updatedDate['date']) {
+                $date = explode(" ",$this->createdDate['date']);
+
                 $data =[
                     'text' => $this->ElementType.' New',
                     'channel' => 'C061EG9SL', //random one
@@ -74,7 +77,7 @@
                         [
                             0 =>
                                 [
-                                    'text' => $this->ElementType.': '.$this->ElementTitle.' by: '.$this->UserName.' Date '.$this->createdDate['date'],
+                                    'text' => $this->ElementType.': '.$this->ElementTitle.' by: '.$this->UserName.' Date '.$date[0],
                                     'actions' =>
                                         [
                                             0 =>
@@ -96,6 +99,7 @@
 
 
             } else {
+                $date = explode(" ",$this->createdDate['date']);
                      $data =[
                     'text' => $this->ElementType.' Update',
                     'channel' => 'C061EG9SL', //random one
@@ -103,7 +107,7 @@
                         [
                             0 =>
                                 [
-                                    'text' =>$this->ElementType.': '.$this->ElementTitle.' by: '.$this->UserName.' Date '.$this->createdDate['date'],
+                                    'text' =>$this->ElementType.': '.$this->ElementTitle.' by: '.$this->UserName.' Date '.$date[0],
                                         'actions' =>
                                         [
                                             0 =>
@@ -138,7 +142,7 @@
         public function actionOnDeleteElements($event)
         {
 
-
+            $date = explode(" ",$this->createdDate['date']);
             $this->ParseElement($event);
 
             if ($this->SearchRequest($this->AllElementType)) {
@@ -149,7 +153,7 @@
                         [
                             0 =>
                                 [
-                                    'text' => $this->ElementType.': '.$this->ElementTitle.' by: '.$this->UserName.' Date '.$this->createdDate['date'],
+                                    'text' => $this->ElementType.': '.$this->ElementTitle.' by: '.$this->UserName.' Date '.$date[0],
 
                                 ],
                         ],
@@ -192,7 +196,7 @@
             {
                 case $event->element instanceof craft\elements\Entry:
                     $entryurl=Craft::$app->getEntries()->getEntryById($event->element->id);
-                     $this->UserName = Craft::$app->getUser()->identity->username;
+                    $this->UserName = Craft::$app->getUser()->identity->username;
                     $this->createdDate = (array)$event->element->dateCreated;
                     $this->updatedDate = (array)$event->element->dateUpdated;
                     $this->title=        $event->element->title;
@@ -238,6 +242,8 @@
                     $this->updatedDate = (array)$event->element->dateUpdated;
                     $this->ElementType = 'Category';
                     $this->ElementTypeId='3';
+                    $this->ElementUrl = Craft::$app->getCategories()->getCategoryById($event->element->id)->cpEditUrl;
+                    $this->ElementEditUrl = Craft::$app->getCategories()->getCategoryById($event->element->id)->cpEditUrl;
                     break;
 
 

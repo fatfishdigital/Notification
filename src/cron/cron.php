@@ -12,7 +12,7 @@ $systemxml = $getcurrent."/src/cron/system.xml";
         $ip=gethostbyname('localhost');
          $fp = @fsockopen($ip, (int)$server->port, $err, $errstr);
         if (!$fp) {
-            $data = ['text' => $server->name.' Server is Running on Port ' . $server->port . ' is Offline'];
+            $data = ['text' =>'[Service Down] Service Name '.$server->name.' port: ' . $server->port;
             send_slack_message($data, $server->port,$SystemSlack);
             send_email_message($data, $SystemEmail);
         }
