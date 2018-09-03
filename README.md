@@ -24,20 +24,29 @@ To install the plugin, follow these instructions.
 
 ## Notification Overview
 
--Insert text here-
+The Craft Notification plugin allows a Site Administrator or a Content Administrator to monitor activities on a Craft site.
+
+Currently, this plugin provides notifications via Slack and Email for "Entries", "Assets", "Users" and "Categories".  
+
+For example, this plugin will send a notification when an entry is created/edited/updated/deleted by a user(s).
+
+This plugin also checks for service status (Apache, MySQL, FTP, etc.) and notifies you when the service is down.
+
 
 ## Configuring Notification
 
--Insert text here-
+![Screenshot](resources/img/screenshot-1.png)
+
+![Screenshot](resources/img/screenshot-2.png)
+
+![Screenshot](resources/img/screenshot-3.png)
 
 ## Using Notification
 
--Insert text here-
+Using this plugin is simple – all you need is to have a Slack account and an email address where you would like the notifications to be sent.
 
-## Notification Roadmap
+Select the options that you would like to be notified about and that's it. You're ready to go.
 
-Some things to do, and ideas for potential features:
+Service status notifications and Craft notifications can be configured to be sent to different parties. This feature is handy when you want to send Technical issues to your Developers and any site issues to your Web Administrators.
 
-* Release it
-
-Brought to you by [Fatfish](https://fatfish.com.au)
+Made with love by [Fatfish](https://fatfish.com.au)
