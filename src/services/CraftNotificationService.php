@@ -31,7 +31,7 @@
                $CraftNotificationRecord->Notification_create=$craftnotification->Notification_create;
                $CraftNotificationRecord->Notification_update=$craftnotification->Notification_update;
                $CraftNotificationRecord->Notification_delete=$craftnotification->Notification_delete;
-               $CraftNotificationRecord->Notification_edit=$craftnotification->Notification_edit;
+               $CraftNotificationRecord->Notification_exception=$craftnotification->Notification_exception;
                $CraftNotificationRecord->save(true);
 
 
@@ -48,7 +48,7 @@
            $CraftNotificationRecord->Notification_create=$craftnotification->Notification_create;
            $CraftNotificationRecord->Notification_update=$craftnotification->Notification_update;
            $CraftNotificationRecord->Notification_delete=$craftnotification->Notification_delete;
-           $CraftNotificationRecord->Notification_edit=$craftnotification->Notification_edit;
+           $CraftNotificationRecord->Notification_exception=$craftnotification->Notification_exception;
             $CraftNotificationRecord->save(true);
 
 

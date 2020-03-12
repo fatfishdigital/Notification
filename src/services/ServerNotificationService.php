@@ -10,15 +10,11 @@
 
 namespace fatfish\notification\services;
 
-
-use fatfish\notification\models\ServerNotificationModel;
-use fatfish\notification\Notification;
-
 use Craft;
 use craft\base\Component;
+use fatfish\notification\models\ServerNotificationModel;
 use fatfish\notification\records\NotificationServerLogRecord;
 use fatfish\notification\records\NotificationServerRecord;
-use yii\db\Command;
 
 /**
  * CraftNotificationService Service
@@ -29,14 +25,53 @@ use yii\db\Command;
  *
  * https://craftcms.com/docs/plugins/services
  *
- * @author    Fatfish
- * @package   Notification
- * @since     1.0.0
+ * @author  Fatfish
+ * @package Notification
+ * @since   1.0.0
  */
 class ServerNotificationService extends Component
 {
     // Public Methods
     // =========================================================================
+
+    /**
+     * @param  $id
+     * @return array|\yii\db\ActiveRecord|null
+     */
+    public static function getServer($id)
+    {
+        $server_data = NotificationServerRecord::find()->where(['id' => $id])->one();
+        return $server_data;
+    }
+
+    /**
+     * @param $id
+     * @return bool
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
+     */
+    public static function DeleteServer($id)
+    {
+        $server = NotificationServerRecord::findOne($id);
+        $server->delete();
+        return true;
+    }
+
+    /**
+     * @param $id
+     * @param $status
+     *
+     * update server log table
+     */
+    public static function UpdateServerStatus($id, $status)
+    {
+        $Serverlogs = NotificationServerLogRecord::findOne(['server_id' => $id]);
+
+        $Serverlogs->server_id = $id;
+        $Serverlogs->server_status = $status;
+
+        $Serverlogs->save();
+    }
 
     /**
      * This function can literally be anything you want, and you can have as many service
@@ -51,25 +86,24 @@ class ServerNotificationService extends Component
      */
     public function SaveServer($serverModel)
     {
-
-
         try {
-            if (isset($serverModel['server_id']) && !is_null((int)$serverModel['server_id']) && !empty($serverModel['server_id'])) {
-
+            if (isset($serverModel['server_id'])&& !is_null((int)$serverModel['server_id'])
+                    && !empty($serverModel['server_id'])
+            ) {
                 $NotificationServerRecord = NotificationServerRecord::findOne((int)$serverModel['server_id']);
                 $NotificationServerRecord->id = (int)$serverModel['server_id'];
                 $NotificationServerRecord->server_name = $serverModel['server_name'];
                 $NotificationServerRecord->server_port = $serverModel['server_port'];
                 $NotificationServerRecord->server_threshold = $serverModel['server_threshold'];
+                $NotificationServerRecord->server_ip = $serverModel['server_ip'];
                 $NotificationServerRecord->save(true);
-                   $this->write_servers_to_xml();
-
+                $this->write_servers_to_xml();
             } else {
-
                 $NotificationServerRecord = new NotificationServerRecord();
                 $NotificationServerRecord->server_name = $serverModel['server_name'];
                 $NotificationServerRecord->server_port = $serverModel['server_port'];
                 $NotificationServerRecord->server_threshold = $serverModel['server_threshold'];
+                $NotificationServerRecord->server_ip = $serverModel['server_ip'];
                 $Notification_Server_Logs = new NotificationServerLogRecord();
                 $NotificationServerRecord->save(true);
                 $Notification_Server_Logs->server_id = $NotificationServerRecord->getAttribute('id');
@@ -77,115 +111,69 @@ class ServerNotificationService extends Component
                 $this->write_servers_to_xml();
             }
         } catch (\Exception $ex) {
-
             Craft::info($ex->getMessage());
         }
 
         return true;
     }
 
-    /**
-     *
-     */
-    public function GetAllServer()
-    {
-
-        $allServer = [];
-        $Servers = NotificationServerRecord::find()->with('allServers')->all();
-
-        foreach ($Servers as $server):
-            $allServer[] =
-                [
-                    'id' => $server->id,
-                    'server_name' => $server->server_name,
-                    'server_threshold' => $server->server_threshold,
-                    'server_port' => $server->server_port,
-                    'server_status' => $server->allServers[0]['server_status'],
-                    'server_last_check' => $server->allServers[0]['server_last_check'],
-
-
-                ];
-
-        endforeach;
-        return $allServer;
-    }
-
-    public static function getServer($id)
-    {
-
-        $server_data = NotificationServerRecord::find()->where(['id' => $id])->one();
-        return $server_data;
-
-    }
-
-    public static function DeleteServer($id)
-    {
-        $server = NotificationServerRecord::findOne($id);
-        $server->delete();
-        return true;
-    }
-
-    /**
-     * @param $id
-     * @param $status
-     *
-     * update server log table
-     */
-    public static function UpdateServerStatus($id,$status)
-    {
-
-       $Serverlogs= NotificationServerLogRecord::findOne(['server_id'=>$id]);
-
-       $Serverlogs->server_id = $id;
-       $Serverlogs->server_status = $status;
-
-       $Serverlogs->save();
-
-     }
-
-     public function write_servers_to_xml()
+    public function write_servers_to_xml()
     {
         $AllServer = NotificationServerRecord::find()->all();
 
         $xml = new \DOMDocument();
-        $xml->formatOutput = True;
+        $xml->formatOutput = true;
         $xml_settings = $xml->createElement("Servers");
+        foreach ($AllServer as $server) {
+            $xml_server = $xml->createElement("Server");
+            $xml_server->setAttribute('id', $server->id);
+            $server_id = $xml->createElement("id", $server->id);
+            $server_name = $xml->createElement("name", $server->server_name);
+            $server_ip = $xml->createElement("server_ip", $server->server_ip);
+            $server_port = $xml->createElement("port", $server->server_port);
+            $server_threshold = $xml->createElement("threshold", $server->server_threshold);
+            $xml_settings->appendChild($xml_server);
+            $xml_server->appendChild($server_id);
+            $xml_server->appendChild($server_name);
+            $xml_server->appendChild($server_port);
+            $xml_server->appendChild($server_threshold);
+            $xml_server->appendChild($server_ip);
 
 
+        }
 
-
-
-
-
-            foreach($AllServer as $server)
-                {
-                    $xml_server = $xml->createElement("Server");
-                    $xml_server->setAttribute('id',$server->id);
-                    $server_id = $xml->createElement("id",$server->id);
-                    $server_name = $xml->createElement("name",$server->server_name);
-                    $server_port = $xml->createElement("port",$server->server_port);
-                    $server_threshold = $xml->createElement("threshold",$server->server_threshold);
-
-
-
-                    $xml_settings->appendChild($xml_server);
-                    $xml_server->appendChild($server_id);
-                    $xml_server->appendChild($server_name);
-                    $xml_server->appendChild($server_port);
-                    $xml_server->appendChild($server_threshold);
-
-                }
-
-                $xml->appendChild($xml_settings);
-                $getcurrent = dirname(dirname( dirname(__FILE__)));
-                $storescript = $getcurrent."/cron/server.xml";
-                $xml->save($storescript);
-
-
-
-
-
-
+        $xml->appendChild($xml_settings);
+        $getcurrent = dirname(dirname(dirname(__FILE__)));
+        $storescript = $getcurrent."/src/cron/server.xml";
+        if (!file_exists($storescript)) {
+            Craft::$app->session->setNotice('Could not save file ! server.xml Does not exist.');
+            return;
+        }
+        $xml->save($storescript);
     }
 
+    /**
+     * @return array
+     */
+    public function GetAllServer()
+    {
+        $allServer = [];
+        $Servers = NotificationServerRecord::find()->with('allServers')->all();
+    foreach ($Servers as $server):
+
+            $allServer[] =
+                    [
+                            'id'                => $server->id,
+                            'server_name'       => $server->server_name,
+                            'server_ip'          => $server->server_ip,
+                            'server_threshold'  => $server->server_threshold,
+                            'server_port'       => $server->server_port,
+                            'server_status'     => $server->allServers[0]['server_status'],
+                            'server_last_check' => $server->allServers[0]['server_last_check'],
+
+                    ];
+
+        endforeach;
+        return $allServer;
+    }
 }

@@ -46,29 +46,38 @@
         {{ csrfInput() }}
         {% set id=null %}
         {% set elementname=null %}
-        {% set elementtype=null %}
+        {% set elementtype='Choose Item' %}
+        {% set sectionName = '' %}
         {% set elementsection=null %}
         {% set entries=null %}
         {% set create=false %}
         {% set update=false %}
         {% set delete=false %}
         {% set response=false %}
-
+        {% set section_type=null %}
+        {%
+        set ElementType= {
+                1:'Entries',
+                2:'Assets',
+                3:'Category',
+                4:'User'
+        }
+        %}
 
         {% if allnotifications is defined and allnotifications | length > (0) %}
-        {% for notification in allnotifications %}
+                    {% for notification in allnotifications %}
 
-            {% set id = notification.id %}
-            {% set elementname = notification.Notification_name %}
-            {% set elementtype = notification.Notification_type %}
-            {% set create = notification.Notification_create %}
-            {% set update = notification.Notification_update %}
-            {% set delete = notification.Notification_delete %}
+                        {% set id = notification.id %}
+                        {% set elementname = notification.Notification_name %}
+                        {% set elementtype = notification.Notification_type %}
+                        {% set elementsection = notification.Notification_section %}
+                        {% set sectionName = notification.Notification_section_list %}
+                        {% set create = notification.Notification_create %}
+                        {% set update = notification.Notification_update %}
+                        {% set delete = notification.Notification_delete %}
+                        {% set response= notification.Notification_exception %}
 
-
-
-
-        {% endfor %}
+                      {% endfor %}
         {% endif %}
         <input type="text" id="id" name="id" value="{{ id }}" hidden>
 
@@ -99,7 +108,7 @@
             </div>
         </div>
 
-        <div class="field" id="sectionType" style="display: none">
+        <div class="field" id="sectionType" style="{% if elementsection is null %}display:none;{% else %}display:block{% endif %}">
             <div class="heading">
                 <label for="element_type" class="required">Section Type </label> <br>
                 <div class="instructions">Choose Section Type eg. Structure,Chanel</div>
@@ -107,12 +116,14 @@
                     id:'section_type',
                     name: 'section_type',
                     label: 'Section Type',
-                    options : ['choose section Type','Channel','Structure'],
+                    options : ['choose section Type','Channel','Structure','Single'],
+                    value :elementsection,
+                    required:true
                     }) }}
             </div>
         </div>
 
-        <div class="field" id="EntriesList" style="display:none;">
+        <div class="field" id="EntriesList" style="{% if section_type is defined %}display: block {% else %} display:none{% endif %}">
             <div class="heading">
                 <label for="element_type" class="required">Entries </label> <br>
                 <div class="instructions">Choose Section Type eg. Structure,Chanel</div>
@@ -120,6 +131,8 @@
                     id:'entries',
                     name: 'entries',
                     label: 'Entries',
+                    options : section_type,
+                    value:sectionName,
                     required: true,
 
                 }) }}
@@ -195,24 +208,6 @@
                                 id:'element_response',
                                 name:'RequestResponse',
                                 on:response,
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                             }
                         ) }}
                     </div>
@@ -232,6 +227,7 @@
 <tr>
 <th>Name</th>
 <th>Type</th>
+<th>EntryName</th>
 <th>Notify on Create Event</th>
 <th>Notify on Update Event</th>
 <th>Notify on Delete Event</th>
@@ -241,15 +237,17 @@
 </thead>
 <tbody>
 {% if notifications is defined and notifications | length > (0) %}
+
 {% for notification in notifications %}
 
     <tr>
         <td>{{ notification.Notification_name }}</td>
-        <td>{{ notification.Notification_type }}</td>
+        <td>{{ ElementType[notification.Notification_type] }}</td>
+        <td>{{notification.Notification_section_list }}</td>
         <td>{% if notification.Notification_create==(1) %} Yes {% else %} No {% endif %}</td>
         <td>{% if notification.Notification_update==(1) %} Yes {% else %} No {% endif %}</td>
         <td>{% if notification.Notification_delete==(1) %} Yes {% else %} No {% endif %}</td>
-        <td>{% if notification.Notification_edit==(1) %} Yes {% else %} No {% endif %}</td>
+        <td>{% if notification.Notification_exception==(1) %} Yes {% else %} No {% endif %}</td>
         <td><a href="/admin/notification/craftedit/{{ notification.id }}">Edit</a> <a href="/admin/notification/deletenotification/{{ notification.id }}">Delete</a> </td>
 
     </tr>
@@ -309,7 +307,7 @@
         }
         else if(parseInt(SectionId)===2)
         {
-    SectionName='structure';
+          SectionName='structure';
         }
     else{
     }

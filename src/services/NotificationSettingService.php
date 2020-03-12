@@ -10,6 +10,7 @@
     use craft\base\Component;
     use fatfish\notification\models\NotificationSettingsModel;
     use fatfish\notification\records\NotificationSettingRecord;
+    use Craft;
 
     class NotificationSettingService extends Component
     {
@@ -51,12 +52,8 @@
             $xml_settings = $xml->createElement("Settings");
             $xml_server = $xml->createElement("Server");
             $xml_craft = $xml->createElement("Craft");
-
-
             $xml_serverslack = $xml->createElement("Slack");
             $xml_serveremail = $xml->createElement("Email");
-
-
             $xml_craft_email = $xml->createElement("Email");
             $xml_craft_slack = $xml->createElement("Slack");
             $xml_craft->appendChild($xml_craft_email);
@@ -74,10 +71,14 @@
 
             $xml->appendChild($xml_settings);
             $getcurrent = dirname(dirname( dirname(__FILE__)));
-            $storescript = $getcurrent."/cron/system.xml";
+            $storescript = $getcurrent."/src/cron/system.xml";
+            if(!file_exists($storescript))
+            {
+                \Craft::info("system.xml doesnot exist under cron folder");
+                return;
+            }
 
             $xml->save($storescript);
-
             $NotificationSettingRecord->save(true);
         }
 

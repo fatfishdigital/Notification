@@ -87,7 +87,12 @@ class ConsoleController extends Controller
     {
 
         $getcurrent = dirname(dirname( dirname(__FILE__)));
-        $scriptdir = $getcurrent."/cron/cron.php";
+        $scriptdir = $getcurrent."/src/cron/cron.php";
+        if(!file_exists($scriptdir))
+        {
+            Craft::error('cron.php file does not exist');
+            return;
+        }
         $cronJob = new CronJob();
         $cronJob->min = '*/2';
         $cronJob->hour = '*';

@@ -9,6 +9,9 @@
  */
 
 namespace fatfish\notification;
+use craft\events\ElementEvent;
+use craft\helpers\ElementHelper;
+use craft\records\Entry;
 use craft\web\Response;
 use fatfish\notification\console\controllers\ConsoleController;
 use fatfish\notification\controllers\ElementsController;
@@ -64,7 +67,7 @@ class Notification extends Plugin
      *
      * @var string
      */
-    public $schemaVersion = '1.0.0';
+    public $schemaVersion = '1.0.3';
 
 
 
@@ -105,8 +108,7 @@ class Notification extends Plugin
             if(!is_null($exception)) {
 
                 $ElementsController = new ElementsController();
-                $ElementsController->actionOnResponse($exception->statusCode,
-                    $exception->getMessage());
+                $ElementsController->actionOnResponse($exception->statusCode,$exception->getMessage(),$event);
             }
         }
         );
@@ -169,9 +171,13 @@ class Notification extends Plugin
         // components events starts from here
 
 
-            Event::on(Elements::class,Elements::EVENT_AFTER_SAVE_ELEMENT,function ($event){
-                $ElementsController = new ElementsController();
-                $ElementsController->actionOnSaveElementEvent($event);
+            Event::on(Elements::class,Elements::EVENT_AFTER_SAVE_ELEMENT,function (ElementEvent $event){
+
+                    if(!ElementHelper::isDraftOrRevision($event->element)) {
+                        $ElementsController = new ElementsController();
+                        $ElementsController->actionOnSaveElementEvent($event);
+                    }
+
             });
 
 

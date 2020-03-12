@@ -50,7 +50,7 @@
     {% if server.server_name is defined %} {% set name=server.server_name %} {% else %}{% set name=null %}{% endif %}
     {% if server. server_port is defined %} {% set port=server.server_port %} {% else %} {% set port=null %}{% endif %}
     {% if server.server_threshold is defined %} {% set threshold=server.server_threshold %} {% else %} {% set threshold=null %}{% endif %}
-
+    {%  if server.server_ip is defined %} {% set ipAddress=server.server_ip %} {% else %} {% set ipAddress="127.0.0.1" %} {% endif %}
 
 
 
@@ -63,6 +63,14 @@
         label : 'Name',
         instructions:'Give your server name eg. Mysql',
         value : name,
+        required :true
+    }) }}
+    {{ forms.textField({
+        id:'server_ip',
+        name:'server_ip',
+        label : 'Server IP address, use 127.0.0.1 if not known',
+        instructions:'Give your server name eg. Mysql',
+        value:ipAddress,
         required :true
     }) }}
 

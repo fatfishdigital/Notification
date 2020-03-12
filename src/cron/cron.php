@@ -1,34 +1,39 @@
-
 <?php
-$getcurrent = dirname(dirname( dirname(__FILE__)));
+/*
+ *  This is responsible for checking only the server status
+ *
+ */
+$getcurrent = dirname(dirname(dirname(__FILE__)));
 $systemxml = $getcurrent."/src/cron/system.xml";
-        $xml = simplexml_load_file($systemxml);
-    $SystemSlack = $xml->Server->Slack;
-    $SystemEmail = $xml->Server->Email;
-    $ServerXml = $getcurrent."/src/cron/server.xml";
+$xml = simplexml_load_file($systemxml);
+$SystemSlack = $xml->Server->Slack;
+$SystemEmail = $xml->Server->Email;
+$ServerXml = $getcurrent."/src/cron/server.xml";
+$serverXml  = simplexml_load_file($ServerXml);
 
-    $serverXml  = simplexml_load_file($ServerXml);
-    foreach($serverXml as $server) {
-        $ip=gethostbyname('localhost');
-         $fp = @fsockopen($ip, (int)$server->port, $err, $errstr);
-        if (!$fp) {
-            $data = ['text' =>'[Service Down] Service Name '.$server->name.' port: ' . $server->port];
-            send_slack_message($data, $server->port,$SystemSlack);
-            send_email_message($data, $SystemEmail);
-        }
+foreach ($serverXml as $server) {
+    $ip=gethostbyname($server->server_ip);
+    $fp = @fsockopen($ip, (int)$server->port, $err, $errstr);
+    if (!$fp) {
+        $data = ['text' =>'[Service Down] Service Name '.$server->name.' port: ' . $server->port];
+
+        send_slack_message($data, $server->port, $SystemSlack);
+        send_email_message($data, $SystemEmail);
+        syslog(1, '[Service Down] Service Name '.$server->name.' port: ' . $server->port);
     }
+}
 
 
-    /**
-     * @param $message
-     * @param $port
-     * @param $slackurl
-     */
-    function send_slack_message($message,$port,$slackurl)
-    {
-        $curl = curl_init();
+/**
+ * @param $message
+ * @param $port
+ * @param $slackurl
+ */
+function send_slack_message($message, $port, $slackurl)
+{
+    $curl = curl_init();
 
-        curl_setopt_array($curl, [
+    curl_setopt_array($curl, [
             CURLOPT_URL => $slackurl,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => "",
@@ -38,32 +43,29 @@ $systemxml = $getcurrent."/src/cron/system.xml";
             CURLOPT_CUSTOMREQUEST => "POST",
             CURLOPT_POSTFIELDS => json_encode($message),
             CURLOPT_HTTPHEADER => [
-                "Cache-Control: no-cache",
-                "Content-Type: application/json",
-                "Postman-Token: 04600ed5-6001-423a-8f57-c8ba69a48e81"
-            ],
-        ]);
+                    "Cache-Control: no-cache",
+                    "Content-Type: application/json",
+                    "Postman-Token: 04600ed5-6001-423a-8f57-c8ba69a48e81"
+                             ],
+                         ]);
 
-        $response = curl_exec($curl);
-        $err = curl_error($curl);
+    $response = curl_exec($curl);
+    $err = curl_error($curl);
 
-        curl_close($curl);
+    curl_close($curl);
 
-        if ($err) {
-            echo "cURL Error #:" . $err;
-        } else {
-            echo $response;
-        }
-        return ;
-    }
+    if ($err) {
+        echo "cURL Error #:" . $err;
+    } else echo $response;
+    return ;
+}
 
-    /**
-     * @param $message
-     * @param $email
-     */
-    function send_email_message($message,$email)
-    {
-
-        mail($email,'Server Down !!!',$message['text']);
-        return ;
-    }
+/**
+ * @param $message
+ * @param $email
+ */
+function send_email_message($message, $email)
+{
+    mail($email, 'Server Down !!!', $message['text']);
+    return ;
+}

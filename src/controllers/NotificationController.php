@@ -7,6 +7,7 @@
      */
 
     namespace fatfish\notification\controllers;
+
     use Craft;
     use craft\web\Controller;
     use fatfish\notification\models\CraftNotificationModel;
@@ -19,11 +20,23 @@
     use fatfish\notification\services\NotificationSettingService;
     use fatfish\notification\services\ServerNotificationService;
 
-
     class NotificationController extends Controller
     {
         public $ServerList;
-        Public $NotificationData = [];
+        public $NotificationData = [];
+        public $sectionType=[
+                0=>'Null',
+                1=>'channel',
+                2=>'structure',
+                3=>'single'
+
+        ];
+        public $ElementType=[
+                0=>'Null',
+                1=>'Entries',
+                2=>'Assets',
+                3=>'User',
+        ];
 
 
         public function actionIndex()
@@ -32,7 +45,6 @@
             $this->ServerList = $NotificationService->getAllServer();
 
             return $this->renderTemplate('notification/index', ['Servers' => $this->ServerList, 'server' => null]);
-
         }
 
 
@@ -42,11 +54,11 @@
             $ServerNotificationModel = new ServerNotificationModel();
             $ServerNotificationModel = $ServerData;
             $NotificationService = new ServerNotificationService();
-            if (!$NotificationService->SaveServer($ServerNotificationModel)) {
-
-                Craft::info('Unable to save data');
-                exit;
-            }
+            if (!$NotificationService->SaveServer($ServerNotificationModel))
+              {
+                    Craft::info('Unable to save data');
+                    exit;
+             }
             Craft::info('Data Saved Successfully !');
             return $this->redirect('notification');
         }
@@ -55,7 +67,10 @@
         public function actionCraft()
         {
             $CraftNotification = NotificationRecord::find()->all();
-            return $this->renderTemplate('notification/craftnotification/_craftnotification',['notifications' => $CraftNotification]);
+
+
+
+            return $this->renderTemplate('notification/craftnotification/_craftnotification', ['notifications' => $CraftNotification]);
         }
 
 
@@ -69,12 +84,11 @@
 
         public function actionDelete($id)
         {
-
-            if (ServerNotificationService::DeleteServer($id)) {
-
+            if (ServerNotificationService::DeleteServer($id))
+            {
                 Craft::info('Item Deleted !!!');
-
-            } else {
+            }
+            else {
                 Craft::error('Cannot Delete item');
             }
             return $this->renderTemplate('notification/index', ['Servers' => $this->ServerList, 'server' => null]);
@@ -87,22 +101,30 @@
          */
         public function actionSection()
         {
-
             $AllSection = [];
             if (Craft::$app->request->isAjax) {
-
                 $SectionType = Craft::$app->request->getBodyParam('sectionHandel');
 
                 $AllSectionType = Craft::$app->getSections()->getSectionsByType($SectionType);
 
                 foreach ($AllSectionType as $section) {
                     $AllSection[$section->id] = $section->name;
-
-
                 }
 
                 return json_encode($AllSection);
             }
+
+        }
+        public function getSectionName($handle)
+        {
+                $AllSection = [];
+             $SectionType = $handle;
+              $AllSectionType = Craft::$app->getSections()->getSectionsByType($SectionType);
+               foreach ($AllSectionType as $section) {
+                    $AllSection[$section->id] = $section->name;
+                }
+                return ($AllSection);
+
 
         }
 
@@ -113,21 +135,19 @@
         public function actionSavenotification()
         {
 
-
             $CraftNotificationModel = new CraftNotificationModel();
             $CraftNotificationModel->id = Craft::$app->request->getBodyParam('id');
             $CraftNotificationModel->Notification_name = Craft::$app->request->getBodyParam('element_name');
             $CraftNotificationModel->Notification_type = Craft::$app->request->getBodyParam('element_type');
-            $CraftNotificationModel->Notification_section = Craft::$app->request->getBodyParam('section_type') === 1 ? 'structure' : 'channel';
+            $CraftNotificationModel->Notification_section = Craft::$app->request->getBodyParam('section_type');
             $CraftNotificationModel->Notification_section_list = Craft::$app->request->getBodyParam('entries');
             $CraftNotificationModel->Notification_create = (int)Craft::$app->request->getBodyParam('Create');
-            $CraftNotificationModel->Notification_edit = (int)Craft::$app->request->getBodyParam('update');
+            $CraftNotificationModel->Notification_update = (int)Craft::$app->request->getBodyParam('update');
             $CraftNotificationModel->Notification_delete = (int)Craft::$app->request->getBodyParam('Delete');
-            $CraftNotificationModel->Notification_edit = (int)Craft::$app->request->getBodyParam('update');
+            $CraftNotificationModel->Notification_exception = (int)Craft::$app->request->getBodyParam('RequestResponse');
             $NotificationService = new CraftNotificationService();
             $NotificationService->SaveCraftNotification($CraftNotificationModel);
             $this->actionCraft();
-
         }
 
         /*
@@ -136,7 +156,6 @@
         public function actionSetting()
         {
             if (Craft::$app->request->isPost) {
-
                 $NotificationSettingsModel = new NotificationSettingsModel();
                 $NotificationSettingsModel->id = Craft::$app->request->getBodyParam('id');
                 $NotificationSettingsModel->email = Craft::$app->request->getBodyParam('email');
@@ -145,16 +164,10 @@
                 $NotificationSettingsModel->craftslack = Craft::$app->request->getBodyParam('craftSlack');
                 $NotificationService = new NotificationSettingService();
                 $NotificationService->SaveNotificationSetting($NotificationSettingsModel);
-
             }
             $NotifcationSettingRecords = NotificationSettingRecord::find()->all();
-
-            if(!is_null($NotifcationSettingRecords) and is_array($NotifcationSettingRecords))
-            {
-
-                Craft::$app->session->set('setting',$NotifcationSettingRecords);
-
-
+            if (!is_null($NotifcationSettingRecords) and is_array($NotifcationSettingRecords)) {
+                Craft::$app->session->set('setting', $NotifcationSettingRecords);
             }
 
 
@@ -168,11 +181,11 @@
          */
         public function actionCraftnotificationedit($id)
         {
-
-           $Id= (int)$id;
-           $NotificationSettingsRecord = NotificationRecord::findAll(['id'=>$Id]);
-            return $this->renderTemplate('notification/craftnotification/_craftnotification',['allnotifications' => $NotificationSettingsRecord]);
-
+            $Id= (int)$id;
+            $NotificationSettingsRecord = NotificationRecord::findAll(['id'=>$Id]);
+            $FieldType= ($this->sectionType[$NotificationSettingsRecord[0]->Notification_section]);
+            return $this->renderTemplate('notification/craftnotification/_craftnotification',
+                    ['allnotifications' => $NotificationSettingsRecord,'section_type'=> $this->getSectionName($FieldType)]);
         }
 
         /*
@@ -185,13 +198,9 @@
         public function actionDeletecraftnotification($id)
         {
 
-                if(isset($id) && !is_null($id))
-                {
-
-                    NotificationRecord::deleteAll(['id'=>$id]);
-                    return $this->redirect('notification/craft');
-
-                }
-
+            if (isset($id) && !is_null($id)) {
+                NotificationRecord::deleteAll(['id'=>$id]);
+                return $this->redirect('notification/craft');
+            }
         }
     }

@@ -13,17 +13,21 @@
     use yii\db\ActiveQueryInterface;
     use craft\db\Query;
 
-    class NotificationServerRecord extends ActiveRecord
+    /**
+     *
+     * @property mixed $allServers
+     */
+class NotificationServerRecord extends ActiveRecord
+{
+    public static function tableName()
     {
-            public static function tableName()
-            {
-                return'{{%notification_server_record}}';
-            }
-            public function getallServers()
-            {
+        return'{{%notification_server_record}}';
+    }
+    public function getallServers()
+    {
 
-              return $this->hasMany(NotificationServerLogRecord::class,['server_id'=>'id']);
+        return $this->hasMany(NotificationServerLogRecord::class, ['server_id'=>'id']);
 
     }
 
-    }
+}

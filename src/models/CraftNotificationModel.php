@@ -18,7 +18,7 @@
         public $Notification_create;
         public $Notification_update;
         public $Notification_delete;
-        public $Notification_edit;
+        public $Notification_exception;
         public $Notification_RequestResponse;
         public $id;
         public function rules()
@@ -33,7 +33,7 @@
                         ['Notification_create','required'],
                         ['Notification_update','required'],
                         ['Notification_delete','required'],
-                        ['Notification_edit','required'],
+                        ['Notification_exception','required'],
 //                        ['Notification_create','required'],
 
                    ];

@@ -22,6 +22,7 @@
                 ['server_name','required'],
                 ['server_port','required'],
                 ['server_threshold','required'],
+                ['server_ip','required'],
 
 
             ];
