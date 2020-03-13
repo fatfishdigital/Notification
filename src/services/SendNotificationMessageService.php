@@ -8,6 +8,7 @@
 
     namespace fatfish\notification\services;
     use craft\base\Component;
+    use craft\elements\Entry;
     use craft\mail\Mailer;
     use craft\mail\Message;
     use \GuzzleHttp\Client;
@@ -37,7 +38,7 @@
             }
             return;
         }
-        public static function sendEmail($messge,$mail)
+        public static function sendEmail($message,$mail)
         {
             if(is_null($mail) || empty($mail))
             {
@@ -51,14 +52,14 @@
             }
             try {
 
-                $EmailSettings = Craft::$app->getSystemSettings()->getEmailSettings();
-                Craft::$app->mailer->compose()
+                $EmailSettings = craft\helpers\App::mailSettings();
+              $result=  Craft::$app->mailer->compose()
                     ->setFrom($EmailSettings->fromEmail)
                     ->setTo($EmailAddress[0])
                     ->setBcc($EmailAddress)
-                    ->setSubject($messge['text'])
-                    ->setTextBody($messge['text'])
-                    ->setHtmlBody($messge['text'])
+                    ->setSubject($message[0]['text']['text'])
+                    ->setTextBody($message[0]['text']['text'])
+                    ->setHtmlBody($message[0]['text']['text'])
                     ->send();
             }
             catch (\Exception $exception)

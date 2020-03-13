@@ -53,7 +53,7 @@
         {% for setting in settings %}
             {% set id=setting.id %}
             {% set email=setting.email %}
-            {% set slack=setting.email %}
+            {% set slack=setting.slack %}
             {% set craftslack=setting.craftslack %}
             {% set craftemail=setting.craftemail %}
 
@@ -89,7 +89,7 @@
         }}
 
 <br>
-        <div class="heading"><label>Craft Notification</></div>
+        <div class="heading"><label>Craft Notification</label></div>
         <hr>
         {{ forms.textfield({
             id:'craft_email',
