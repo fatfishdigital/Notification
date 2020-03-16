@@ -77,6 +77,8 @@ class ConsoleController extends Controller
         if(Craft::$app->request->isConsoleRequest) {
 
            ServerStatusController::check_server_status();
+
+
             return;
 
         }
@@ -86,8 +88,8 @@ class ConsoleController extends Controller
     public static function actionSetcronjob()
     {
 
-        $getcurrent = dirname(dirname( dirname(__FILE__)));
-        $scriptdir = $getcurrent."/src/cron/cron.php";
+        $getcurrent = Craft::$app->plugins->getPlugin('notification')->getBasePath();
+         $scriptdir = $getcurrent."/cron/cron.php";
         if(!file_exists($scriptdir))
         {
             Craft::error('cron.php file does not exist');
