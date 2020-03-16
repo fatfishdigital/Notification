@@ -105,7 +105,9 @@
                     'uid' => $this->uid(),
                     'server_name'=>$this->string(45),
                     'server_port'=>$this->string(45),
-                    'server_threshold'=>$this->string(45)
+                    'server_threshold'=>$this->string(45),
+                    'server_ip'=>$this->string(45)
+
                 ]
             );
         }
@@ -170,7 +172,8 @@
             'uid' => $this->uid(),
             'server_id'=>$this->integer(),
             'server_status'=>$this->integer(),
-            'server_last_check'=>$this->string(45)
+            'server_last_check'=>$this->string(45),
+             'server_ip'=>$this->string(45),
 
 
         ]);
@@ -188,7 +191,7 @@
                 'Notification_create'           => $this->boolean(),
                 'Notification_update'           => $this->boolean(),
                 'Notification_delete'           => $this->boolean(),
-                'Notification_edit'             => $this->boolean(),
+                'Notification_exception'             => $this->boolean(),
                 'uid'                           => $this->uid(),
                 'dateCreated'                   => $this->dateTime()->notNull(),
                 'dateUpdated'                   => $this->dateTime()->notNull(),

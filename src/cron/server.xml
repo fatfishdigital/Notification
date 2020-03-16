@@ -2,16 +2,9 @@
 <Servers>
   <Server id="1">
     <id>1</id>
-    <name>mysqls</name>
-    <port>3306</port>
-    <threshold>11</threshold>
-    <server_ip>172.16.238.12</server_ip>
-  </Server>
-  <Server id="2">
-    <id>2</id>
-    <name>Apache</name>
-    <port>80</port>
-    <threshold>11</threshold>
-    <server_ip>172.16.238.11</server_ip>
+    <name>test</name>
+    <port>2222</port>
+    <threshold>1</threshold>
+    <server_ip>127.0.0.1</server_ip>
   </Server>
 </Servers>

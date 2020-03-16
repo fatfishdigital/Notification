@@ -50,16 +50,17 @@
 
         public function actionSave()
         {
+
             $ServerData = Craft::$app->request->post();
             $ServerNotificationModel = new ServerNotificationModel();
             $ServerNotificationModel = $ServerData;
-            $NotificationService = new ServerNotificationService();
+             $NotificationService = new ServerNotificationService();
             if (!$NotificationService->SaveServer($ServerNotificationModel))
               {
-                    Craft::info('Unable to save data');
+                    Craft::$app->getSession()->setNotice('Unable to save data');
                     exit;
              }
-            Craft::info('Data Saved Successfully !');
+            Craft::$app->getSession()->setNotice('Data Saved Successfully !');
             return $this->redirect('notification');
         }
 
@@ -86,10 +87,10 @@
         {
             if (ServerNotificationService::DeleteServer($id))
             {
-                Craft::info('Item Deleted !!!');
+                Craft::$app->getSession()->setNotice('Item Deleted !!!');
             }
             else {
-                Craft::error('Cannot Delete item');
+                Craft::$app->getSession()->setNotice('Cannot Delete item');
             }
             return $this->renderTemplate('notification/index', ['Servers' => $this->ServerList, 'server' => null]);
         }

@@ -111,6 +111,7 @@ class ServerNotificationService extends Component
                 $this->write_servers_to_xml();
             }
         } catch (\Exception $ex) {
+            var_dump($ex->getMessage());die;
             Craft::info($ex->getMessage());
         }
 
@@ -145,11 +146,18 @@ class ServerNotificationService extends Component
         $xml->appendChild($xml_settings);
         $getcurrent = dirname(dirname(dirname(__FILE__)));
         $storescript = $getcurrent."/src/cron/server.xml";
+
         if (!file_exists($storescript)) {
-            Craft::$app->session->setNotice('Could not save file ! server.xml Does not exist.');
-            return;
+            $fp=fopen($storescript,"w+");
+            $xml->save($storescript);
+            fclose($fp);
+
+
+        }else
+        {
+            $xml->save($storescript);
         }
-        $xml->save($storescript);
+
     }
 
     /**

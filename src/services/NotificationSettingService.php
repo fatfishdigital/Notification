@@ -49,7 +49,7 @@
          */
         public function write_system_config_xml($NotificationSettingRecord): void
         {
-            $xml = new \DOMDocument();
+             $xml = new \DOMDocument();
             $xml_settings = $xml->createElement("Settings");
             $xml_server = $xml->createElement("Server");
             $xml_craft = $xml->createElement("Craft");
@@ -75,19 +75,29 @@
             $storescript = $getcurrent."/src/cron/system.xml";
              if(!file_exists($storescript))
             {
-                \Craft::info("system.xml doesnot exist under cron folder");
-                return;
-            }
-
-            try {
+                $fp=fopen($storescript,"w+");
+                if(!$fp)
+                {
+                    \Craft::$app->getSession()->setNotice("system.xml doesnot exist under cron folder");
+                    return;
+                }
                 $xml->save($storescript);
+                fclose($fp);
                 $NotificationSettingRecord->save(true);
-            }
-            catch(\Exception $e)
-            {
-                Craft::info($e->getMessage());
-            }
 
+            }else {
+
+
+                 try {
+                     $xml->save($storescript);
+                     $NotificationSettingRecord->save(true);
+
+                 } catch(\Exception $e) {
+
+
+                     Craft::$app->getSession()->setNotice($e->getMessage());
+                 }
+             }
         }
 
 
