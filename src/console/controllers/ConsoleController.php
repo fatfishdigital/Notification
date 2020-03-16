@@ -77,20 +77,19 @@ class ConsoleController extends Controller
         if(Craft::$app->request->isConsoleRequest) {
 
            ServerStatusController::check_server_status();
-
-
             return;
+
+
 
         }
         echo "Sorry unauthorize action detected";
     }
 
-    public static function actionSetcronjob()
+    public static function actionSetcronjob($plugin)
     {
-
-        $getcurrent = Craft::$app->plugins->getPlugin('notification')->getBasePath();
-         $scriptdir = $getcurrent."/cron/cron.php";
-        if(!file_exists($scriptdir))
+        $getcurrent=$plugin->getBasePath();
+        $scriptdir = $getcurrent."/cron/cron.php";
+           if(!file_exists($scriptdir))
         {
             Craft::error('cron.php file does not exist');
             return;

@@ -162,7 +162,7 @@ class Notification extends Plugin
             Plugins::EVENT_AFTER_INSTALL_PLUGIN,
             function (PluginEvent $event) {
                 if ($event->plugin === $this) {
-                    ConsoleController::actionSetcronjob();
+                                 ConsoleController::actionSetcronjob($event->plugin);
                 }
             }
         );
