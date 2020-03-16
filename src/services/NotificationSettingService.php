@@ -72,6 +72,7 @@
             $xml->appendChild($xml_settings);
             $getcurrent = dirname(dirname( dirname(__FILE__)));
             $storescript = $getcurrent."/src/cron/system.xml";
+            chmod($storescript,0755);
             if(!file_exists($storescript))
             {
                 \Craft::info("system.xml doesnot exist under cron folder");
