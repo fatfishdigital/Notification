@@ -60,8 +60,10 @@
           if(empty($this->CraftEmail) || empty($this->CraftSlackUrl))
           {
               $NotificationSettingsRecord = NotificationSettingRecord::find()->all();
-              $this->CraftSlackUrl = $NotificationSettingsRecord[0]['craftslack'];
-              $this->CraftEmail = $NotificationSettingsRecord[0]['craftemail'];
+              if(is_array($NotificationSettingsRecord)) {
+                  $this->CraftSlackUrl = $NotificationSettingsRecord[0]['craftslack'];
+                  $this->CraftEmail = $NotificationSettingsRecord[0]['craftemail'];
+              }
           }
 
             }
