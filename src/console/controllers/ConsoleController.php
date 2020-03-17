@@ -88,6 +88,7 @@ class ConsoleController extends Controller
 
     public static function actionSetcronjob($plugin)
     {
+
         $getcurrent=$plugin->getBasePath();
         $filepath="$getcurrent/cron/cron.php";
         $scriptdir = "php $filepath";

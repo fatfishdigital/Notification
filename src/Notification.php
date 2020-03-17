@@ -162,10 +162,18 @@ class Notification extends Plugin
             Plugins::EVENT_AFTER_INSTALL_PLUGIN,
             function (PluginEvent $event) {
                 if ($event->plugin === $this) {
-                                 ConsoleController::actionSetcronjob($event->plugin);
+                    mkdir(CRAFT_BASE_PATH."/storage/notification");
+                     ConsoleController::actionSetcronjob($event->plugin);
                 }
             }
         );
+        Event::on(Plugins::class,Plugins::EVENT_AFTER_UNINSTALL_PLUGIN,function(PluginEvent $pluginEvent){
+            if($pluginEvent->plugin==$this)
+            {
+
+                rmdir(CRAFT_BASE_PATH."/storage/notification");
+            }
+        });
 
 
         // components events starts from here

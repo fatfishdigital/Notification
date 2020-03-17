@@ -22,24 +22,33 @@
          */
         public static function check_server_status()
         {
-            $Servers=NotificationServerRecord::find()->select('id,server_port')->all();
-            $ip = gethostbyname('localhost');
-            $NotificationSettings = NotificationSettingRecord::find()->select('slack,email')->all();
-            if (!empty($Servers)) {
-                foreach ($Servers as $server) {
-                    $fp = fsockopen($ip, $server->server_port, $errorno, $errstr);
-                    if (!$fp) {
-                        ServerNotificationService::UpdateServerStatus($server->id, 0);
-                        $data = ['text'=>'Service running on port '.$server->server_port.' is Offline'];
-                        if (!empty($NotificationSettings[0]['slack']) && !is_null($NotificationSettings[0]['slack'])) {
-                            SendNotificationMessageService::sendSlackMessage(json_encode($data), $NotificationSettings[0]['slack']);
-                        } elseif (!empty($NotificationSettings[0]['email']) && !is_null($NotificationSettings[0]['email'])) {
-                            SendNotificationMessageService::sendEmail($data, $NotificationSettings[0]['email']);
-                        }
-                    } else {
-                        ServerNotificationService::UpdateServerStatus($server->id, 1);
-                    }
+            $serverxml = CRAFT_BASE_PATH."/storage/notification/server.xml";
+            $SystemXml = CRAFT_BASE_PATH."/storage/notification/server.xml";
+            if(!file_exists($SystemXml) || !file_exists($serverxml))
+            {
+                syslog(1,"Required file doesnot exist");
+                exit;
+            }
+
+            $xml = simplexml_load_file($SystemXml);
+            $SystemSlack = $xml->Server->Slack;
+            $SystemEmail = $xml->Server->Email;
+            $serverXml  = simplexml_load_file($serverxml);
+
+            foreach ($serverXml as $server) {
+                $ip=gethostbyname($server->server_ip);
+                $fp = @fsockopen($ip, (int)$server->port, $err, $errstr);
+                if (!$fp) {
+                    $data = ['text'=>'Service running on port '.$server->server_port.' is Offline'];
+                    ServerNotificationService::UpdateServerStatus($server->id, 0);
+                    SendNotificationMessageService::sendSlackMessage(json_encode($data), $server->port, $SystemSlack);
+                    SendNotificationMessageService::sendEmail($data, $SystemEmail);
+
+                }else
+                {
+                    ServerNotificationService::UpdateServerStatus($server->id, 1);
                 }
             }
+
         }
     }

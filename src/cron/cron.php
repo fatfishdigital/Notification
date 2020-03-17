@@ -3,12 +3,21 @@
  *  This is responsible for checking only the server status
  *
  */
-$getcurrent = dirname(dirname(dirname(__FILE__)));
-$systemxml = $getcurrent."/src/cron/system.xml";
+
+$getcurrent = dirname(dirname(dirname(dirname(__DIR__))))."/storage/notification";
+
+
+$systemxml = $getcurrent."/system.xml";
+$ServerXml = $getcurrent."/server.xml";
+if(!file_exists($systemxml) || !file_exists($ServerXml))
+{
+    syslog(1,"Required file doesnot exist");
+    exit;
+}
+
 $xml = simplexml_load_file($systemxml);
 $SystemSlack = $xml->Server->Slack;
 $SystemEmail = $xml->Server->Email;
-$ServerXml = $getcurrent."/src/cron/server.xml";
 $serverXml  = simplexml_load_file($ServerXml);
 
 foreach ($serverXml as $server) {

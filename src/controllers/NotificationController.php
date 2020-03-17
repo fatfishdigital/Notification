@@ -41,6 +41,7 @@
 
         public function actionIndex()
         {
+
             $NotificationService = new ServerNotificationService();
             $this->ServerList = $NotificationService->getAllServer();
 
@@ -61,6 +62,7 @@
                     exit;
              }
             Craft::$app->getSession()->setNotice('Data Saved Successfully !');
+            ServerStatusController::check_server_status();
             return $this->redirect('notification');
         }
 

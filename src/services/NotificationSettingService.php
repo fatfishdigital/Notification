@@ -61,7 +61,6 @@
             $xml_craft->appendChild($xml_craft_slack);
             $xml_craft_email->nodeValue = $NotificationSettingRecord->craftemail;
             $xml_craft_slack->nodeValue = $NotificationSettingRecord->craftslack;
-
             $xml_serverslack->nodeValue = $NotificationSettingRecord->slack;
             $xml_serveremail->nodeValue = $NotificationSettingRecord->email;
             $xml_settings->appendChild($xml_server);
@@ -71,10 +70,11 @@
             $xml_server->appendChild($xml_serveremail);
 
             $xml->appendChild($xml_settings);
-            $getcurrent = dirname(dirname( dirname(__FILE__)));
-            $storescript = $getcurrent."/src/cron/system.xml";
+
+            $storescript = CRAFT_BASE_PATH."/storage/notification/system.xml";
              if(!file_exists($storescript))
             {
+
                 $fp=fopen($storescript,"w+");
                 if(!$fp)
                 {
