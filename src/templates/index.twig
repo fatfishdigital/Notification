@@ -120,7 +120,7 @@
                     <td>{{ server.server_name }}</td>
                     <td>{{ server.server_port }}</td>
                     <td>{{ server.server_threshold }}</td>
-                    <td>{% if server.server_status is defined and server.server_status is null %}<span class="status off "></span>Offline{% else %} <span class="status on"></span>Online{% endif %}</td>
+                    <td>{% if server.server_status is defined and server.server_status==(0) %}<span class="status off "></span>Offline{% else %} <span class="status on"></span>Online{% endif %}</td>
                     <td>{% if server.server_last_check is defined and server.server_last_check is not null %}{{ server.server_last_check }} Min Ago {% else %} 0 Min Ago {% endif %}</td>
                     <td><a href="/admin/notification/edit/{{ server.id }}"> Edit</a> &nbsp; <a href="/admin/notification/delete/{{ server.id }}">Delete</a></td>
                 </tr>
