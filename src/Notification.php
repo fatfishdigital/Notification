@@ -171,7 +171,7 @@ class Notification extends Plugin
             if($pluginEvent->plugin==$this)
             {
 
-                rmdir(CRAFT_BASE_PATH."/storage/notification");
+                system("rm -rf ".CRAFT_BASE_PATH."/storage/notification");
             }
         });
 
