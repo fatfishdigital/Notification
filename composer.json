@@ -2,7 +2,7 @@
     "name": "fatfish/notification",
     "description": "Notification plugin for craft 3.x",
     "type": "craft-plugin",
-    "version": "1.0.5.7-beta",
+    "version": "1.0.5.8-beta",
     "keywords": [
         "craft",
         "cms",
