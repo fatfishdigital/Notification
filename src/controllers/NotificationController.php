@@ -94,7 +94,8 @@
             else {
                 Craft::$app->getSession()->setNotice('Cannot Delete item');
             }
-            return $this->renderTemplate('notification/index', ['Servers' => $this->ServerList, 'server' => null]);
+            $this->redirect('notification');
+            //return $this->renderTemplate('notification/index', ['Servers' => $this->ServerList, 'server' => null]);
         }
 
 
