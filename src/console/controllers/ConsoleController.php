@@ -103,8 +103,7 @@ class ConsoleController extends Controller
 
                 [
                         'min' => '2',
-                        'hour' => '2',
-                        'command' => $scriptdir,
+                       'command' => $scriptdir,
                 ],
 
         ]);
