@@ -77,6 +77,7 @@ class ConsoleController extends Controller
         if(Craft::$app->request->isConsoleRequest) {
 
            ServerStatusController::check_server_status();
+         self::actionSetcronjob($this);
             return;
 
 
@@ -88,21 +89,27 @@ class ConsoleController extends Controller
     public static function actionSetcronjob($plugin)
     {
         $getcurrent=$plugin->getBasePath();
-        $scriptdir = $getcurrent."/cron/cron.php";
-           if(!file_exists($scriptdir))
+        $filepath="$getcurrent/cron/cron.php";
+        $scriptdir = "php $filepath";
+        if(!file_exists($filepath))
         {
+
             Craft::error('cron.php file does not exist');
             return;
         }
-        $cronJob = new CronJob();
-        $cronJob->min = '*/2';
-        $cronJob->hour = '*';
-        $cronJob->command = 'php '.$scriptdir;
         $cronTab = new CronTab();
+        $cronTab->mergeFilter=$scriptdir;
         $cronTab->setJobs([
-            $cronJob
+
+                [
+                        'min' => '2',
+                        'hour' => '2',
+                        'command' => $scriptdir,
+                ],
+
         ]);
-        $cronTab->apply();
+        $result=$cronTab->apply();
+
 
 
 
